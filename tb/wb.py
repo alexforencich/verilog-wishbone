@@ -91,7 +91,7 @@ class WBMaster(object):
                     # address in words
                     adw = int(cmd[1]/ws)*ws
                     # select for first access
-                    sel_start = ((2**(ww)-1) << adw % ww) & (2**(ww)-1)
+                    sel_start = ((2**(ww)-1) << (adw/ws) % ww) & (2**(ww)-1)
 
                     # cannot address within words
                     assert cmd[1] == adw
@@ -99,7 +99,7 @@ class WBMaster(object):
                     if cmd[0] == 'w':
                         data = cmd[2]
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> (ww - (((adw + int(len(data)/ws) - 1) % ww) + 1)))
+                        sel_end = ((2**(ww)-1) >> (ww - (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)))
                         # number of cycles
                         cycles = int((len(data) + bw-1 + (cmd[1] % bw)) / bw)
                         i = 0
@@ -115,7 +115,7 @@ class WBMaster(object):
                         adr_o.next = addr
                         val = 0
                         for j in range(bw):
-                            if j >= adw % ww and (cycles > 1 or j < (((adw + int(len(data)/ws) - 1) % ww) + 1)):
+                            if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)):
                                 val |= ord(data[i]) << j*8
                                 i += 1
                         dat_o.next = val
@@ -150,7 +150,7 @@ class WBMaster(object):
                             adr_o.next = addr + (cycles-1) * bw
                             val = 0
                             for j in range(bw):
-                                if j < (((adw + int(len(data)/ws) - 1) % ww) + 1):
+                                if int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1):
                                     val |= ord(data[i]) << j*8
                                     i += 1
                             dat_o.next = val
@@ -168,7 +168,7 @@ class WBMaster(object):
                     elif cmd[0] == 'r':
                         data = b''
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> (ww - (((adw + int(cmd[2]/ws) - 1) % ww) + 1)))
+                        sel_end = ((2**(ww)-1) >> (ww - (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)))
                         # number of cycles
                         cycles = int((cmd[2] + bw-1 + (cmd[1] % bw)) / bw)
 
@@ -188,7 +188,7 @@ class WBMaster(object):
                         val = int(dat_i)
 
                         for j in range(bw):
-                            if j >= adw % ww and (cycles > 1 or j < (((adw + int(cmd[2]/ws) - 1) % ww) + 1)):
+                            if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)):
                                 data += chr((val >> j*8) & 255)
 
                         for k in range(1, cycles-1):
@@ -219,7 +219,7 @@ class WBMaster(object):
                             val = int(dat_i)
 
                             for j in range(bw):
-                                if j < (((adw + int(cmd[2]/ws) - 1) % ww) + 1):
+                                if int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1):
                                     data += chr((val >> j*8) & 255)
 
                         cyc_o.next = 0
