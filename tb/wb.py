@@ -108,10 +108,10 @@ class WBMaster(object):
                             print("[%s] Write data a:0x%08x d:%s" % (name, adw, " ".join("{:02x}".format(ord(c)) for c in data)))
 
                         cyc_o.next = 1
-                        stb_o.next = 1
-                        we_o.next = 1
 
                         # first cycle
+                        stb_o.next = 1
+                        we_o.next = 1
                         adr_o.next = addr
                         val = 0
                         for j in range(bw):
@@ -126,12 +126,17 @@ class WBMaster(object):
                             sel_o.next = sel_start
 
                         yield clk.posedge
-
                         while not int(ack_i):
                             yield clk.posedge
 
+                        stb_o.next = 0
+                        we_o.next = 0
+
                         for k in range(1, cycles-1):
                             # middle cycles
+                            yield clk.posedge
+                            stb_o.next = 1
+                            we_o.next = 1
                             adr_o.next = addr + k * bw
                             val = 0
                             for j in range(bw):
@@ -141,12 +146,17 @@ class WBMaster(object):
                             sel_o.next = 2**(ww)-1
 
                             yield clk.posedge
-                            
                             while not int(ack_i):
                                 yield clk.posedge
 
+                            stb_o.next = 0
+                            we_o.next = 0
+
                         if cycles > 1:
                             # last cycle
+                            yield clk.posedge
+                            stb_o.next = 1
+                            we_o.next = 1
                             adr_o.next = addr + (cycles-1) * bw
                             val = 0
                             for j in range(bw):
@@ -157,14 +167,17 @@ class WBMaster(object):
                             sel_o.next = sel_end
 
                             yield clk.posedge
-
                             while not int(ack_i):
                                 yield clk.posedge
 
+                            stb_o.next = 0
+                            we_o.next = 0
+
                         we_o.next = 0
+                        stb_o.next = 0
 
                         cyc_o.next = 0
-                        stb_o.next = 0
+
                     elif cmd[0] == 'r':
                         data = b''
                         # select for last access
@@ -173,17 +186,20 @@ class WBMaster(object):
                         cycles = int((cmd[2] + bw-1 + (cmd[1] % bw)) / bw)
 
                         cyc_o.next = 1
-                        stb_o.next = 1
 
                         # first cycle
+                        stb_o.next = 1
                         adr_o.next = addr
                         if cycles == 1:
                             sel_o.next = sel_start & sel_end
                         else:
                             sel_o.next = sel_start
 
+                        yield clk.posedge
                         while not int(ack_i):
                             yield clk.posedge
+
+                        stb_o.next = 0
 
                         val = int(dat_i)
 
@@ -193,13 +209,16 @@ class WBMaster(object):
 
                         for k in range(1, cycles-1):
                             # middle cycles
+                            yield clk.posedge
+                            stb_o.next = 1
                             adr_o.next = addr + k * bw
                             sel_o.next = 2**(ww)-1
 
                             yield clk.posedge
-
                             while not int(ack_i):
                                 yield clk.posedge
+
+                            stb_o.next = 0
 
                             val = int(dat_i)
 
@@ -208,13 +227,16 @@ class WBMaster(object):
 
                         if cycles > 1:
                             # last cycle
+                            yield clk.posedge
+                            stb_o.next = 1
                             adr_o.next = addr + (cycles-1) * bw
                             sel_o.next = sel_end
 
                             yield clk.posedge
-
                             while not int(ack_i):
                                 yield clk.posedge
+
+                            stb_o.next = 0
 
                             val = int(dat_i)
 
@@ -222,8 +244,8 @@ class WBMaster(object):
                                 if int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1):
                                     data += chr((val >> j*8) & 255)
 
-                        cyc_o.next = 0
                         stb_o.next = 0
+                        cyc_o.next = 0
 
                         if name is not None:
                             print("[%s] Read data a:0x%08x d:%s" % (name, adw, " ".join("{:02x}".format(ord(c)) for c in data)))

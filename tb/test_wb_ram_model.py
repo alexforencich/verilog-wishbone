@@ -166,9 +166,9 @@ def bench():
                 i = 1
                 
                 port0_cyc_i.next = 1
+
                 port0_stb_i.next = 1
                 port0_we_i.next = 1
-
                 port0_adr_i.next = 256*(16*offset+length)
                 val = 0
                 for j in range(4):
@@ -181,10 +181,17 @@ def bench():
                 else:
                     port0_sel_i.next = sel_start
 
-                yield port0_ack_o.posedge
                 yield clk.posedge
+                while not port0_ack_o:
+                    yield clk.posedge
+
+                port0_we_i.next = 0
+                port0_stb_i.next = 0
 
                 for k in range(1,cycles-1):
+                    yield clk.posedge
+                    port0_stb_i.next = 1
+                    port0_we_i.next = 1
                     port0_adr_i.next = 256*(16*offset+length)+4*k
                     val = 0
                     for j in range(4):
@@ -193,10 +200,17 @@ def bench():
                     port0_dat_i.next = val
                     port0_sel_i.next = 2**(4)-1
 
-                    yield port0_ack_o.posedge
                     yield clk.posedge
+                    while not port0_ack_o:
+                        yield clk.posedge
+
+                    port0_we_i.next = 0
+                    port0_stb_i.next = 0
 
                 if cycles > 1:
+                    yield clk.posedge
+                    port0_stb_i.next = 1
+                    port0_we_i.next = 1
                     port0_adr_i.next = 256*(16*offset+length)+4*(cycles-1)
                     val = 0
                     for j in range(4):
@@ -206,12 +220,17 @@ def bench():
                     port0_dat_i.next = val
                     port0_sel_i.next = sel_end
 
-                    yield port0_ack_o.posedge
                     yield clk.posedge
+                    while not port0_ack_o:
+                        yield clk.posedge
+
+                    port0_we_i.next = 0
+                    port0_stb_i.next = 0
 
                 port0_we_i.next = 0
-                port0_cyc_i.next = 0
                 port0_stb_i.next = 0
+
+                port0_cyc_i.next = 0
 
                 yield clk.posedge
                 yield clk.posedge
