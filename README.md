@@ -18,15 +18,16 @@ Asynchronous register module for clock domain crossing with parametrizable
 data and address interface widths.  Uses internal synchronization to pass
 wishbone bus cycles across clock domain boundaries.
 
-### wb_dp_ram
+### wb_dp_ram module
 
-Dual-port RAM with parametrizable data and address interface widths.
+Dual-port, dual-clock RAM with parametrizable data and address interface
+widths.
 
-### wb_ram
+### wb_ram module
 
 RAM with parametrizable data and address interface widths.
 
-### wb_reg
+### wb_reg module
 
 Synchronous register with parametrizable data and address interface widths.
 Registers all wishbone signals.  Used to improve timing for long routes.
