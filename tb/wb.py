@@ -31,12 +31,21 @@ class WBMaster(object):
         self.command_queue = Queue()
         self.read_data_queue = Queue()
         self.has_logic = False
+        self.clk = None
+        self.cyc_o = None
 
     def init_read(self, address, length):
         self.command_queue.put(('r', address, length))
 
     def init_write(self, address, data):
         self.command_queue.put(('w', address, data))
+
+    def idle(self):
+        return self.command_queue.empty() and not bool(self.cyc_o)
+
+    def wait(self):
+        while not self.idle():
+            yield self.clk.posedge
 
     def read_data_ready(self):
         return not self.read_data_queue.empty()
@@ -60,6 +69,8 @@ class WBMaster(object):
             raise Exception("Logic already instantiated!")
 
         self.has_logic = True
+        self.clk = clk
+        self.cyc_o = cyc_o
 
         @instance
         def logic():

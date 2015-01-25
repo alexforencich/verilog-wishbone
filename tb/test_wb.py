@@ -120,8 +120,7 @@ def bench():
 
         wb_master_inst.init_write(4, '\x11\x22\x33\x44')
 
-        yield port0_cyc_i.negedge
-        yield clk.posedge
+        yield wb_master_inst.wait()
         yield clk.posedge
 
         data = wb_ram_inst.read_mem(0, 32)
@@ -138,8 +137,7 @@ def bench():
 
         wb_master_inst.init_read(4, 4)
 
-        yield port0_cyc_i.negedge
-        yield clk.posedge
+        yield wb_master_inst.wait()
         yield clk.posedge
 
         data = wb_master_inst.get_read_data()
@@ -156,8 +154,7 @@ def bench():
             for offset in range(4):
                 wb_master_inst.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
-                yield port0_cyc_i.negedge
-                yield clk.posedge
+                yield wb_master_inst.wait()
                 yield clk.posedge
 
                 data = wb_ram_inst.read_mem(256*(16*offset+length), 32)
@@ -176,8 +173,7 @@ def bench():
             for offset in range(4):
                 wb_master_inst.init_read(256*(16*offset+length)+offset, length)
 
-                yield port0_cyc_i.negedge
-                yield clk.posedge
+                yield wb_master_inst.wait()
                 yield clk.posedge
 
                 data = wb_master_inst.get_read_data()
