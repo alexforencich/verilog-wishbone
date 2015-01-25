@@ -36,10 +36,8 @@ module wb_dp_ram #
     parameter SELECT_WIDTH = 4  // width of word select bus (1, 2, 4, or 8)
 )
 (
-    input  wire                    clk,
-    input  wire                    rst,
-
     // port A
+    input  wire                    a_clk,
     input  wire [ADDR_WIDTH-1:0]   a_adr_i,   // ADR_I() address
     input  wire [DATA_WIDTH-1:0]   a_dat_i,   // DAT_I() data in
     output wire [DATA_WIDTH-1:0]   a_dat_o,   // DAT_O() data out
@@ -50,6 +48,7 @@ module wb_dp_ram #
     input  wire                    a_cyc_i,   // CYC_I cycle input
 
     // port B
+    input  wire                    b_clk,
     input  wire [ADDR_WIDTH-1:0]   b_adr_i,   // ADR_I() address
     input  wire [DATA_WIDTH-1:0]   b_dat_i,   // DAT_I() data in
     output wire [DATA_WIDTH-1:0]   b_dat_o,   // DAT_O() data out
@@ -94,7 +93,7 @@ initial begin
 end
 
 // port A
-always @(posedge clk) begin
+always @(posedge a_clk) begin
     a_ack_o_reg <= 1'b0;
     if (a_cyc_i & a_stb_i & ~a_ack_o) begin
         if (a_we_i) begin
@@ -112,7 +111,7 @@ always @(posedge clk) begin
 end
 
 // port B
-always @(posedge clk) begin
+always @(posedge b_clk) begin
     b_ack_o_reg <= 1'b0;
     if (b_cyc_i & b_stb_i & ~b_ack_o) begin
         if (b_we_i) begin

@@ -37,8 +37,10 @@ parameter ADDR_WIDTH = 16;
 parameter SELECT_WIDTH = 4;
 
 // Inputs
-reg clk = 0;
-reg rst = 0;
+reg a_clk = 0;
+reg a_rst = 0;
+reg b_clk = 0;
+reg b_rst = 0;
 reg [7:0] current_test = 0;
 
 reg [ADDR_WIDTH-1:0] a_adr_i = 0;
@@ -62,8 +64,10 @@ wire b_ack_o;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
+    $from_myhdl(a_clk,
+                a_rst,
+                b_clk,
+                b_rst,
                 current_test,
                 a_adr_i,
                 a_dat_i,
@@ -93,8 +97,7 @@ wb_dp_ram #(
     .SELECT_WIDTH(SELECT_WIDTH)
 )
 UUT (
-    .clk(clk),
-    .rst(rst),
+    .a_clk(a_clk),
     .a_adr_i(a_adr_i),
     .a_dat_i(a_dat_i),
     .a_dat_o(a_dat_o),
@@ -103,6 +106,7 @@ UUT (
     .a_stb_i(a_stb_i),
     .a_ack_o(a_ack_o),
     .a_cyc_i(a_cyc_i),
+    .b_clk(b_clk),
     .b_adr_i(b_adr_i),
     .b_dat_i(b_dat_i),
     .b_dat_o(b_dat_o),

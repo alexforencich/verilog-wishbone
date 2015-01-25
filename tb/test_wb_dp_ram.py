@@ -39,8 +39,10 @@ src = ' '.join(srcs)
 
 build_cmd = "iverilog -o test_%s.vvp %s" % (module, src)
 
-def dut_wb_dp_ram(clk,
-                  rst,
+def dut_wb_dp_ram(a_clk,
+                  a_rst,
+                  b_clk,
+                  b_rst,
                   current_test,
                   a_adr_i,
                   a_dat_i,
@@ -62,8 +64,10 @@ def dut_wb_dp_ram(clk,
     if os.system(build_cmd):
         raise Exception("Error running build command")
     return Cosimulation("vvp -m myhdl test_%s.vvp -lxt2" % module,
-                clk=clk,
-                rst=rst,
+                a_clk=a_clk,
+                a_rst=a_rst,
+                b_clk=b_clk,
+                b_rst=b_rst,
                 current_test=current_test,
                 a_adr_i=a_adr_i,
                 a_dat_i=a_dat_i,
@@ -90,8 +94,10 @@ def bench():
     SELECT_WIDTH = 4
 
     # Inputs
-    clk = Signal(bool(0))
-    rst = Signal(bool(0))
+    a_clk = Signal(bool(0))
+    a_rst = Signal(bool(0))
+    b_clk = Signal(bool(0))
+    b_rst = Signal(bool(0))
     current_test = Signal(intbv(0)[8:])
 
     a_adr_i = Signal(intbv(0)[ADDR_WIDTH:])
@@ -116,7 +122,7 @@ def bench():
     # WB master A
     wbm_inst_a = wb.WBMaster()
 
-    wbm_logic_a = wbm_inst_a.create_logic(clk,
+    wbm_logic_a = wbm_inst_a.create_logic(a_clk,
                                       adr_o=a_adr_i,
                                       dat_i=a_dat_o,
                                       dat_o=a_dat_i,
@@ -130,7 +136,7 @@ def bench():
     # WB master B
     wbm_inst_b = wb.WBMaster()
 
-    wbm_logic_b = wbm_inst_b.create_logic(clk,
+    wbm_logic_b = wbm_inst_b.create_logic(b_clk,
                                       adr_o=b_adr_i,
                                       dat_i=b_dat_o,
                                       dat_o=b_dat_i,
@@ -142,8 +148,10 @@ def bench():
                                       name='master_')
 
     # DUT
-    dut = dut_wb_dp_ram(clk,
-                        rst,
+    dut = dut_wb_dp_ram(a_clk,
+                        a_rst,
+                        b_clk,
+                        b_rst,
                         current_test,
                         a_adr_i,
                         a_dat_i,
@@ -163,35 +171,43 @@ def bench():
                         b_cyc_i)
 
     @always(delay(4))
-    def clkgen():
-        clk.next = not clk
+    def a_clkgen():
+        a_clk.next = not a_clk
+
+    @always(delay(5))
+    def b_clkgen():
+        b_clk.next = not b_clk
 
     @instance
     def check():
         yield delay(100)
-        yield clk.posedge
-        rst.next = 1
-        yield clk.posedge
-        rst.next = 0
-        yield clk.posedge
+        yield a_clk.posedge
+        a_rst.next = 1
+        b_rst.next = 1
+        yield a_clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
+        a_rst.next = 0
+        b_rst.next = 0
+        yield a_clk.posedge
         yield delay(100)
-        yield clk.posedge
+        yield a_clk.posedge
 
-        yield clk.posedge
+        yield a_clk.posedge
         print("test 1: read and write (port A)")
         current_test.next = 1
 
         wbm_inst_a.init_write(4, '\x11\x22\x33\x44')
 
         yield a_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
 
         wbm_inst_a.init_read(4, 4)
 
         yield a_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
         
         data = wbm_inst_a.get_read_data()
         assert data[0] == 4
@@ -199,21 +215,21 @@ def bench():
 
         yield delay(100)
 
-        yield clk.posedge
+        yield a_clk.posedge
         print("test 2: read and write (port B)")
         current_test.next = 2
 
         wbm_inst_b.init_write(4, '\x11\x22\x33\x44')
 
         yield b_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
+        yield b_clk.posedge
+        yield b_clk.posedge
 
         wbm_inst_b.init_read(4, 4)
 
         yield b_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
+        yield b_clk.posedge
+        yield b_clk.posedge
         
         data = wbm_inst_b.get_read_data()
         assert data[0] == 4
@@ -221,7 +237,7 @@ def bench():
 
         yield delay(100)
 
-        yield clk.posedge
+        yield a_clk.posedge
         print("test 3: various reads and writes (port A)")
         current_test.next = 3
 
@@ -230,16 +246,16 @@ def bench():
                 wbm_inst_a.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
                 yield a_cyc_i.negedge
-                yield clk.posedge
-                yield clk.posedge
+                yield a_clk.posedge
+                yield a_clk.posedge
 
         for length in range(1,8):
             for offset in range(4):
                 wbm_inst_a.init_read(256*(16*offset+length)+offset, length)
 
                 yield a_cyc_i.negedge
-                yield clk.posedge
-                yield clk.posedge
+                yield a_clk.posedge
+                yield a_clk.posedge
 
                 data = wbm_inst_a.get_read_data()
                 assert data[0] == 256*(16*offset+length)+offset
@@ -247,7 +263,7 @@ def bench():
 
         yield delay(100)
 
-        yield clk.posedge
+        yield a_clk.posedge
         print("test 4: various reads and writes (port B)")
         current_test.next = 4
 
@@ -256,16 +272,16 @@ def bench():
                 wbm_inst_b.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
                 yield b_cyc_i.negedge
-                yield clk.posedge
-                yield clk.posedge
+                yield b_clk.posedge
+                yield b_clk.posedge
 
         for length in range(1,8):
             for offset in range(4):
                 wbm_inst_b.init_read(256*(16*offset+length)+offset, length)
 
                 yield b_cyc_i.negedge
-                yield clk.posedge
-                yield clk.posedge
+                yield b_clk.posedge
+                yield b_clk.posedge
 
                 data = wbm_inst_b.get_read_data()
                 assert data[0] == 256*(16*offset+length)+offset
@@ -273,7 +289,7 @@ def bench():
 
         yield delay(100)
 
-        yield clk.posedge
+        yield a_clk.posedge
         print("test 5: simultaneous read and write")
         current_test.next = 5
 
@@ -281,16 +297,20 @@ def bench():
         wbm_inst_b.init_write(12, '\xBB\xBB\xBB\xBB')
 
         yield a_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
 
         wbm_inst_a.init_read(12, 4)
         wbm_inst_b.init_read(8, 4)
 
         yield a_cyc_i.negedge
-        yield clk.posedge
-        yield clk.posedge
-        
+        yield a_clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
+        yield a_clk.posedge
+
         data = wbm_inst_a.get_read_data()
         assert data[0] == 12
         assert data[1] == '\xBB\xBB\xBB\xBB'
@@ -302,7 +322,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, wbm_logic_a, wbm_logic_b, clkgen, check
+    return dut, wbm_logic_a, wbm_logic_b, a_clkgen, b_clkgen, check
 
 def test_bench():
     sim = Simulation(bench())
