@@ -115,8 +115,8 @@ def bench():
         assert wb_ram_inst.read_mem(0,4) == b'test'
 
         yield clk.posedge
-        print("test 2: write via port0")
-        current_test.next = 2
+        print("test 3: write via port0")
+        current_test.next = 3
 
         wb_master_inst.init_write(4, b'\x11\x22\x33\x44')
 
@@ -133,8 +133,8 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 3: read via port0")
-        current_test.next = 3
+        print("test 4: read via port0")
+        current_test.next = 4
 
         wb_master_inst.init_read(4, 4)
 
@@ -149,8 +149,8 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 4: various writes")
-        current_test.next = 4
+        print("test 5: various writes")
+        current_test.next = 5
 
         for length in range(1,8):
             for offset in range(4):
@@ -169,8 +169,8 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 5: various reads")
-        current_test.next = 5
+        print("test 6: various reads")
+        current_test.next = 6
 
         for length in range(1,8):
             for offset in range(4):
