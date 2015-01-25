@@ -278,7 +278,7 @@ def bench():
         current_test.next = 5
 
         wbm_inst_a.init_write(8, '\xAA\xAA\xAA\xAA')
-        wbm_inst_b.init_write(12, '\xBB\xBB\xBB\xB')
+        wbm_inst_b.init_write(12, '\xBB\xBB\xBB\xBB')
 
         yield a_cyc_i.negedge
         yield clk.posedge
@@ -293,7 +293,7 @@ def bench():
         
         data = wbm_inst_a.get_read_data()
         assert data[0] == 12
-        assert data[1] == '\xBB\xBB\xBB\xB'
+        assert data[1] == '\xBB\xBB\xBB\xBB'
         data = wbm_inst_b.get_read_data()
         assert data[0] == 8
         assert data[1] == '\xAA\xAA\xAA\xAA'
