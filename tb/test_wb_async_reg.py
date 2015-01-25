@@ -39,60 +39,60 @@ src = ' '.join(srcs)
 
 build_cmd = "iverilog -o test_%s.vvp %s" % (module, src)
 
-def dut_wb_async_reg(m_clk,
-                     m_rst,
-                     s_clk,
-                     s_rst,
+def dut_wb_async_reg(wbm_clk,
+                     wbm_rst,
+                     wbs_clk,
+                     wbs_rst,
                      current_test,
-                     m_adr_i,
-                     m_dat_i,
-                     m_dat_o,
-                     m_we_i,
-                     m_sel_i,
-                     m_stb_i,
-                     m_ack_o,
-                     m_err_o,
-                     m_rty_o,
-                     m_cyc_i,
-                     s_adr_o,
-                     s_dat_i,
-                     s_dat_o,
-                     s_we_o,
-                     s_sel_o,
-                     s_stb_o,
-                     s_ack_i,
-                     s_err_i,
-                     s_rty_i,
-                     s_cyc_o):
+                     wbm_adr_i,
+                     wbm_dat_i,
+                     wbm_dat_o,
+                     wbm_we_i,
+                     wbm_sel_i,
+                     wbm_stb_i,
+                     wbm_ack_o,
+                     wbm_err_o,
+                     wbm_rty_o,
+                     wbm_cyc_i,
+                     wbs_adr_o,
+                     wbs_dat_i,
+                     wbs_dat_o,
+                     wbs_we_o,
+                     wbs_sel_o,
+                     wbs_stb_o,
+                     wbs_ack_i,
+                     wbs_err_i,
+                     wbs_rty_i,
+                     wbs_cyc_o):
 
     if os.system(build_cmd):
         raise Exception("Error running build command")
     return Cosimulation("vvp -m myhdl test_%s.vvp -lxt2" % module,
-                m_clk=m_clk,
-                m_rst=m_rst,
-                s_clk=s_clk,
-                s_rst=s_rst,
+                wbm_clk=wbm_clk,
+                wbm_rst=wbm_rst,
+                wbs_clk=wbs_clk,
+                wbs_rst=wbs_rst,
                 current_test=current_test,
-                m_adr_i=m_adr_i,
-                m_dat_i=m_dat_i,
-                m_dat_o=m_dat_o,
-                m_we_i=m_we_i,
-                m_sel_i=m_sel_i,
-                m_stb_i=m_stb_i,
-                m_ack_o=m_ack_o,
-                m_err_o=m_err_o,
-                m_rty_o=m_rty_o,
-                m_cyc_i=m_cyc_i,
-                s_adr_o=s_adr_o,
-                s_dat_i=s_dat_i,
-                s_dat_o=s_dat_o,
-                s_we_o=s_we_o,
-                s_sel_o=s_sel_o,
-                s_stb_o=s_stb_o,
-                s_ack_i=s_ack_i,
-                s_err_i=s_err_i,
-                s_rty_i=s_rty_i,
-                s_cyc_o=s_cyc_o)
+                wbm_adr_i=wbm_adr_i,
+                wbm_dat_i=wbm_dat_i,
+                wbm_dat_o=wbm_dat_o,
+                wbm_we_i=wbm_we_i,
+                wbm_sel_i=wbm_sel_i,
+                wbm_stb_i=wbm_stb_i,
+                wbm_ack_o=wbm_ack_o,
+                wbm_err_o=wbm_err_o,
+                wbm_rty_o=wbm_rty_o,
+                wbm_cyc_i=wbm_cyc_i,
+                wbs_adr_o=wbs_adr_o,
+                wbs_dat_i=wbs_dat_i,
+                wbs_dat_o=wbs_dat_o,
+                wbs_we_o=wbs_we_o,
+                wbs_sel_o=wbs_sel_o,
+                wbs_stb_o=wbs_stb_o,
+                wbs_ack_i=wbs_ack_i,
+                wbs_err_i=wbs_err_i,
+                wbs_rty_i=wbs_rty_i,
+                wbs_cyc_o=wbs_cyc_o)
 
 def bench():
 
@@ -102,123 +102,123 @@ def bench():
     SELECT_WIDTH = 4
 
     # Inputs
-    m_clk = Signal(bool(0))
-    m_rst = Signal(bool(0))
-    s_clk = Signal(bool(0))
-    s_rst = Signal(bool(0))
+    wbm_clk = Signal(bool(0))
+    wbm_rst = Signal(bool(0))
+    wbs_clk = Signal(bool(0))
+    wbs_rst = Signal(bool(0))
     current_test = Signal(intbv(0)[8:])
 
-    m_adr_i = Signal(intbv(0)[ADDR_WIDTH:])
-    m_dat_i = Signal(intbv(0)[DATA_WIDTH:])
-    m_we_i = Signal(bool(0))
-    m_sel_i = Signal(intbv(0)[SELECT_WIDTH:])
-    m_stb_i = Signal(bool(0))
-    m_cyc_i = Signal(bool(0))
-    s_dat_i = Signal(intbv(0)[DATA_WIDTH:])
-    s_ack_i = Signal(bool(0))
-    s_err_i = Signal(bool(0))
-    s_rty_i = Signal(bool(0))
+    wbm_adr_i = Signal(intbv(0)[ADDR_WIDTH:])
+    wbm_dat_i = Signal(intbv(0)[DATA_WIDTH:])
+    wbm_we_i = Signal(bool(0))
+    wbm_sel_i = Signal(intbv(0)[SELECT_WIDTH:])
+    wbm_stb_i = Signal(bool(0))
+    wbm_cyc_i = Signal(bool(0))
+    wbs_dat_i = Signal(intbv(0)[DATA_WIDTH:])
+    wbs_ack_i = Signal(bool(0))
+    wbs_err_i = Signal(bool(0))
+    wbs_rty_i = Signal(bool(0))
 
     # Outputs
-    m_dat_o = Signal(intbv(0)[DATA_WIDTH:])
-    m_ack_o = Signal(bool(0))
-    m_err_o = Signal(bool(0))
-    m_rty_o = Signal(bool(0))
-    s_adr_o = Signal(intbv(0)[ADDR_WIDTH:])
-    s_dat_o = Signal(intbv(0)[DATA_WIDTH:])
-    s_we_o = Signal(bool(0))
-    s_sel_o = Signal(intbv(0)[SELECT_WIDTH:])
-    s_stb_o = Signal(bool(0))
-    s_cyc_o = Signal(bool(0))
+    wbm_dat_o = Signal(intbv(0)[DATA_WIDTH:])
+    wbm_ack_o = Signal(bool(0))
+    wbm_err_o = Signal(bool(0))
+    wbm_rty_o = Signal(bool(0))
+    wbs_adr_o = Signal(intbv(0)[ADDR_WIDTH:])
+    wbs_dat_o = Signal(intbv(0)[DATA_WIDTH:])
+    wbs_we_o = Signal(bool(0))
+    wbs_sel_o = Signal(intbv(0)[SELECT_WIDTH:])
+    wbs_stb_o = Signal(bool(0))
+    wbs_cyc_o = Signal(bool(0))
 
     # WB master
     wbm_inst = wb.WBMaster()
 
-    wbm_logic = wbm_inst.create_logic(m_clk,
-                                      adr_o=m_adr_i,
-                                      dat_i=m_dat_o,
-                                      dat_o=m_dat_i,
-                                      we_o=m_we_i,
-                                      sel_o=m_sel_i,
-                                      stb_o=m_stb_i,
-                                      ack_i=m_ack_o,
-                                      cyc_o=m_cyc_i,
+    wbm_logic = wbm_inst.create_logic(wbm_clk,
+                                      adr_o=wbm_adr_i,
+                                      dat_i=wbm_dat_o,
+                                      dat_o=wbm_dat_i,
+                                      we_o=wbm_we_i,
+                                      sel_o=wbm_sel_i,
+                                      stb_o=wbm_stb_i,
+                                      ack_i=wbm_ack_o,
+                                      cyc_o=wbm_cyc_i,
                                       name='master')
 
     # WB RAM model
     wb_ram_inst = wb.WBRam(2**16)
 
-    wb_ram_port0 = wb_ram_inst.create_port(s_clk,
-                                           adr_i=s_adr_o,
-                                           dat_i=s_dat_o,
-                                           dat_o=s_dat_i,
-                                           we_i=s_we_o,
-                                           sel_i=s_sel_o,
-                                           stb_i=s_stb_o,
-                                           ack_o=s_ack_i,
-                                           cyc_i=s_cyc_o,
+    wb_ram_port0 = wb_ram_inst.create_port(wbs_clk,
+                                           adr_i=wbs_adr_o,
+                                           dat_i=wbs_dat_o,
+                                           dat_o=wbs_dat_i,
+                                           we_i=wbs_we_o,
+                                           sel_i=wbs_sel_o,
+                                           stb_i=wbs_stb_o,
+                                           ack_o=wbs_ack_i,
+                                           cyc_i=wbs_cyc_o,
                                            latency=1,
                                            async=False,
                                            name='slave')
 
     # DUT
-    dut = dut_wb_async_reg(m_clk,
-                           m_rst,
-                           s_clk,
-                           s_rst,
+    dut = dut_wb_async_reg(wbm_clk,
+                           wbm_rst,
+                           wbs_clk,
+                           wbs_rst,
                            current_test,
-                           m_adr_i,
-                           m_dat_i,
-                           m_dat_o,
-                           m_we_i,
-                           m_sel_i,
-                           m_stb_i,
-                           m_ack_o,
-                           m_err_o,
-                           m_rty_o,
-                           m_cyc_i,
-                           s_adr_o,
-                           s_dat_i,
-                           s_dat_o,
-                           s_we_o,
-                           s_sel_o,
-                           s_stb_o,
-                           s_ack_i,
-                           s_err_i,
-                           s_rty_i,
-                           s_cyc_o)
+                           wbm_adr_i,
+                           wbm_dat_i,
+                           wbm_dat_o,
+                           wbm_we_i,
+                           wbm_sel_i,
+                           wbm_stb_i,
+                           wbm_ack_o,
+                           wbm_err_o,
+                           wbm_rty_o,
+                           wbm_cyc_i,
+                           wbs_adr_o,
+                           wbs_dat_i,
+                           wbs_dat_o,
+                           wbs_we_o,
+                           wbs_sel_o,
+                           wbs_stb_o,
+                           wbs_ack_i,
+                           wbs_err_i,
+                           wbs_rty_i,
+                           wbs_cyc_o)
 
     @always(delay(4))
-    def m_clkgen():
-        m_clk.next = not m_clk
+    def wbm_clkgen():
+        wbm_clk.next = not wbm_clk
 
     @always(delay(5))
-    def s_clkgen():
-        s_clk.next = not s_clk
+    def wbs_clkgen():
+        wbs_clk.next = not wbs_clk
 
     @instance
     def check():
         yield delay(100)
-        yield m_clk.posedge
-        m_rst.next = 1
-        s_rst.next = 1
-        yield m_clk.posedge
-        yield m_clk.posedge
-        yield m_clk.posedge
-        m_rst.next = 0
-        s_rst.next = 0
-        yield m_clk.posedge
+        yield wbm_clk.posedge
+        wbm_rst.next = 1
+        wbs_rst.next = 1
+        yield wbm_clk.posedge
+        yield wbm_clk.posedge
+        yield wbm_clk.posedge
+        wbm_rst.next = 0
+        wbs_rst.next = 0
+        yield wbm_clk.posedge
         yield delay(100)
-        yield m_clk.posedge
+        yield wbm_clk.posedge
 
-        yield m_clk.posedge
+        yield wbm_clk.posedge
         print("test 1: write")
         current_test.next = 1
 
         wbm_inst.init_write(4, '\x11\x22\x33\x44')
 
         yield wbm_inst.wait()
-        yield m_clk.posedge
+        yield wbm_clk.posedge
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
@@ -228,14 +228,14 @@ def bench():
 
         yield delay(100)
 
-        yield m_clk.posedge
+        yield wbm_clk.posedge
         print("test 2: read")
         current_test.next = 2
 
         wbm_inst.init_read(4, 4)
 
         yield wbm_inst.wait()
-        yield m_clk.posedge
+        yield wbm_clk.posedge
 
         data = wbm_inst.get_read_data()
         assert data[0] == 4
@@ -243,7 +243,7 @@ def bench():
 
         yield delay(100)
 
-        yield m_clk.posedge
+        yield wbm_clk.posedge
         print("test 3: various writes")
         current_test.next = 3
 
@@ -252,7 +252,7 @@ def bench():
                 wbm_inst.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
                 yield wbm_inst.wait()
-                yield m_clk.posedge
+                yield wbm_clk.posedge
 
                 data = wb_ram_inst.read_mem(256*(16*offset+length), 32)
                 for i in range(0, len(data), 16):
@@ -262,7 +262,7 @@ def bench():
 
         yield delay(100)
 
-        yield m_clk.posedge
+        yield wbm_clk.posedge
         print("test 4: various reads")
         current_test.next = 4
 
@@ -271,7 +271,7 @@ def bench():
                 wbm_inst.init_read(256*(16*offset+length)+offset, length)
 
                 yield wbm_inst.wait()
-                yield m_clk.posedge
+                yield wbm_clk.posedge
 
                 data = wbm_inst.get_read_data()
                 assert data[0] == 256*(16*offset+length)+offset
@@ -281,7 +281,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, wbm_logic, wb_ram_port0, m_clkgen, s_clkgen, check
+    return dut, wbm_logic, wb_ram_port0, wbm_clkgen, wbs_clkgen, check
 
 def test_bench():
     sim = Simulation(bench())

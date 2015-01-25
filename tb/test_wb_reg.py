@@ -42,26 +42,26 @@ build_cmd = "iverilog -o test_%s.vvp %s" % (module, src)
 def dut_wb_reg(clk,
                rst,
                current_test,
-               m_adr_i,
-               m_dat_i,
-               m_dat_o,
-               m_we_i,
-               m_sel_i,
-               m_stb_i,
-               m_ack_o,
-               m_err_o,
-               m_rty_o,
-               m_cyc_i,
-               s_adr_o,
-               s_dat_i,
-               s_dat_o,
-               s_we_o,
-               s_sel_o,
-               s_stb_o,
-               s_ack_i,
-               s_err_i,
-               s_rty_i,
-               s_cyc_o):
+               wbm_adr_i,
+               wbm_dat_i,
+               wbm_dat_o,
+               wbm_we_i,
+               wbm_sel_i,
+               wbm_stb_i,
+               wbm_ack_o,
+               wbm_err_o,
+               wbm_rty_o,
+               wbm_cyc_i,
+               wbs_adr_o,
+               wbs_dat_i,
+               wbs_dat_o,
+               wbs_we_o,
+               wbs_sel_o,
+               wbs_stb_o,
+               wbs_ack_i,
+               wbs_err_i,
+               wbs_rty_i,
+               wbs_cyc_o):
 
     if os.system(build_cmd):
         raise Exception("Error running build command")
@@ -69,26 +69,26 @@ def dut_wb_reg(clk,
                 clk=clk,
                 rst=rst,
                 current_test=current_test,
-                m_adr_i=m_adr_i,
-                m_dat_i=m_dat_i,
-                m_dat_o=m_dat_o,
-                m_we_i=m_we_i,
-                m_sel_i=m_sel_i,
-                m_stb_i=m_stb_i,
-                m_ack_o=m_ack_o,
-                m_err_o=m_err_o,
-                m_rty_o=m_rty_o,
-                m_cyc_i=m_cyc_i,
-                s_adr_o=s_adr_o,
-                s_dat_i=s_dat_i,
-                s_dat_o=s_dat_o,
-                s_we_o=s_we_o,
-                s_sel_o=s_sel_o,
-                s_stb_o=s_stb_o,
-                s_ack_i=s_ack_i,
-                s_err_i=s_err_i,
-                s_rty_i=s_rty_i,
-                s_cyc_o=s_cyc_o)
+                wbm_adr_i=wbm_adr_i,
+                wbm_dat_i=wbm_dat_i,
+                wbm_dat_o=wbm_dat_o,
+                wbm_we_i=wbm_we_i,
+                wbm_sel_i=wbm_sel_i,
+                wbm_stb_i=wbm_stb_i,
+                wbm_ack_o=wbm_ack_o,
+                wbm_err_o=wbm_err_o,
+                wbm_rty_o=wbm_rty_o,
+                wbm_cyc_i=wbm_cyc_i,
+                wbs_adr_o=wbs_adr_o,
+                wbs_dat_i=wbs_dat_i,
+                wbs_dat_o=wbs_dat_o,
+                wbs_we_o=wbs_we_o,
+                wbs_sel_o=wbs_sel_o,
+                wbs_stb_o=wbs_stb_o,
+                wbs_ack_i=wbs_ack_i,
+                wbs_err_i=wbs_err_i,
+                wbs_rty_i=wbs_rty_i,
+                wbs_cyc_o=wbs_cyc_o)
 
 def bench():
 
@@ -102,55 +102,55 @@ def bench():
     rst = Signal(bool(0))
     current_test = Signal(intbv(0)[8:])
 
-    m_adr_i = Signal(intbv(0)[ADDR_WIDTH:])
-    m_dat_i = Signal(intbv(0)[DATA_WIDTH:])
-    m_we_i = Signal(bool(0))
-    m_sel_i = Signal(intbv(0)[SELECT_WIDTH:])
-    m_stb_i = Signal(bool(0))
-    m_cyc_i = Signal(bool(0))
-    s_dat_i = Signal(intbv(0)[DATA_WIDTH:])
-    s_ack_i = Signal(bool(0))
-    s_err_i = Signal(bool(0))
-    s_rty_i = Signal(bool(0))
+    wbm_adr_i = Signal(intbv(0)[ADDR_WIDTH:])
+    wbm_dat_i = Signal(intbv(0)[DATA_WIDTH:])
+    wbm_we_i = Signal(bool(0))
+    wbm_sel_i = Signal(intbv(0)[SELECT_WIDTH:])
+    wbm_stb_i = Signal(bool(0))
+    wbm_cyc_i = Signal(bool(0))
+    wbs_dat_i = Signal(intbv(0)[DATA_WIDTH:])
+    wbs_ack_i = Signal(bool(0))
+    wbs_err_i = Signal(bool(0))
+    wbs_rty_i = Signal(bool(0))
 
     # Outputs
-    m_dat_o = Signal(intbv(0)[DATA_WIDTH:])
-    m_ack_o = Signal(bool(0))
-    m_err_o = Signal(bool(0))
-    m_rty_o = Signal(bool(0))
-    s_adr_o = Signal(intbv(0)[ADDR_WIDTH:])
-    s_dat_o = Signal(intbv(0)[DATA_WIDTH:])
-    s_we_o = Signal(bool(0))
-    s_sel_o = Signal(intbv(0)[SELECT_WIDTH:])
-    s_stb_o = Signal(bool(0))
-    s_cyc_o = Signal(bool(0))
+    wbm_dat_o = Signal(intbv(0)[DATA_WIDTH:])
+    wbm_ack_o = Signal(bool(0))
+    wbm_err_o = Signal(bool(0))
+    wbm_rty_o = Signal(bool(0))
+    wbs_adr_o = Signal(intbv(0)[ADDR_WIDTH:])
+    wbs_dat_o = Signal(intbv(0)[DATA_WIDTH:])
+    wbs_we_o = Signal(bool(0))
+    wbs_sel_o = Signal(intbv(0)[SELECT_WIDTH:])
+    wbs_stb_o = Signal(bool(0))
+    wbs_cyc_o = Signal(bool(0))
 
     # WB master
     wbm_inst = wb.WBMaster()
 
     wbm_logic = wbm_inst.create_logic(clk,
-                                      adr_o=m_adr_i,
-                                      dat_i=m_dat_o,
-                                      dat_o=m_dat_i,
-                                      we_o=m_we_i,
-                                      sel_o=m_sel_i,
-                                      stb_o=m_stb_i,
-                                      ack_i=m_ack_o,
-                                      cyc_o=m_cyc_i,
+                                      adr_o=wbm_adr_i,
+                                      dat_i=wbm_dat_o,
+                                      dat_o=wbm_dat_i,
+                                      we_o=wbm_we_i,
+                                      sel_o=wbm_sel_i,
+                                      stb_o=wbm_stb_i,
+                                      ack_i=wbm_ack_o,
+                                      cyc_o=wbm_cyc_i,
                                       name='master')
 
     # WB RAM model
     wb_ram_inst = wb.WBRam(2**16)
 
     wb_ram_port0 = wb_ram_inst.create_port(clk,
-                                           adr_i=s_adr_o,
-                                           dat_i=s_dat_o,
-                                           dat_o=s_dat_i,
-                                           we_i=s_we_o,
-                                           sel_i=s_sel_o,
-                                           stb_i=s_stb_o,
-                                           ack_o=s_ack_i,
-                                           cyc_i=s_cyc_o,
+                                           adr_i=wbs_adr_o,
+                                           dat_i=wbs_dat_o,
+                                           dat_o=wbs_dat_i,
+                                           we_i=wbs_we_o,
+                                           sel_i=wbs_sel_o,
+                                           stb_i=wbs_stb_o,
+                                           ack_o=wbs_ack_i,
+                                           cyc_i=wbs_cyc_o,
                                            latency=1,
                                            async=False,
                                            name='slave')
@@ -159,26 +159,26 @@ def bench():
     dut = dut_wb_reg(clk,
                      rst,
                      current_test,
-                     m_adr_i,
-                     m_dat_i,
-                     m_dat_o,
-                     m_we_i,
-                     m_sel_i,
-                     m_stb_i,
-                     m_ack_o,
-                     m_err_o,
-                     m_rty_o,
-                     m_cyc_i,
-                     s_adr_o,
-                     s_dat_i,
-                     s_dat_o,
-                     s_we_o,
-                     s_sel_o,
-                     s_stb_o,
-                     s_ack_i,
-                     s_err_i,
-                     s_rty_i,
-                     s_cyc_o)
+                     wbm_adr_i,
+                     wbm_dat_i,
+                     wbm_dat_o,
+                     wbm_we_i,
+                     wbm_sel_i,
+                     wbm_stb_i,
+                     wbm_ack_o,
+                     wbm_err_o,
+                     wbm_rty_o,
+                     wbm_cyc_i,
+                     wbs_adr_o,
+                     wbs_dat_i,
+                     wbs_dat_o,
+                     wbs_we_o,
+                     wbs_sel_o,
+                     wbs_stb_o,
+                     wbs_ack_i,
+                     wbs_err_i,
+                     wbs_rty_i,
+                     wbs_cyc_o)
 
     @always(delay(4))
     def clkgen():
