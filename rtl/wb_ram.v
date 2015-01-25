@@ -37,7 +37,6 @@ module wb_ram #
 )
 (
     input  wire                    clk,
-    input  wire                    rst,
 
     input  wire [ADDR_WIDTH-1:0]   adr_i,   // ADR_I() address
     input  wire [DATA_WIDTH-1:0]   dat_i,   // DAT_I() data in

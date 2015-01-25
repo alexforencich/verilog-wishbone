@@ -78,7 +78,6 @@ wb_ram #(
 )
 UUT (
     .clk(clk),
-    .rst(rst),
     .adr_i(adr_i),
     .dat_i(dat_i),
     .dat_o(dat_o),
