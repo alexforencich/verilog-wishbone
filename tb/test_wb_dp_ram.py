@@ -139,7 +139,7 @@ def bench():
                                       stb_o=b_stb_i,
                                       ack_i=b_ack_o,
                                       cyc_o=b_cyc_i,
-                                      name='master_b')
+                                      name='master_')
 
     # DUT
     dut = dut_wb_dp_ram(clk,
@@ -181,7 +181,7 @@ def bench():
         print("test 1: read and write (port A)")
         current_test.next = 1
 
-        wbm_inst_a.init_write(4, b'\x11\x22\x33\x44')
+        wbm_inst_a.init_write(4, '\x11\x22\x33\x44')
 
         yield a_cyc_i.negedge
         yield clk.posedge
@@ -195,7 +195,7 @@ def bench():
         
         data = wbm_inst_a.get_read_data()
         assert data[0] == 4
-        assert data[1] == b'\x11\x22\x33\x44'
+        assert data[1] == '\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -203,7 +203,7 @@ def bench():
         print("test 2: read and write (port B)")
         current_test.next = 2
 
-        wbm_inst_b.init_write(4, b'\x11\x22\x33\x44')
+        wbm_inst_b.init_write(4, '\x11\x22\x33\x44')
 
         yield b_cyc_i.negedge
         yield clk.posedge
@@ -217,7 +217,7 @@ def bench():
         
         data = wbm_inst_b.get_read_data()
         assert data[0] == 4
-        assert data[1] == b'\x11\x22\x33\x44'
+        assert data[1] == '\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -227,7 +227,7 @@ def bench():
 
         for length in range(1,8):
             for offset in range(4):
-                wbm_inst_a.init_write(256*(16*offset+length)+offset, b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
+                wbm_inst_a.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
                 yield a_cyc_i.negedge
                 yield clk.posedge
@@ -243,7 +243,7 @@ def bench():
 
                 data = wbm_inst_a.get_read_data()
                 assert data[0] == 256*(16*offset+length)+offset
-                assert data[1] == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
+                assert data[1] == '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
         yield delay(100)
 
@@ -253,7 +253,7 @@ def bench():
 
         for length in range(1,8):
             for offset in range(4):
-                wbm_inst_b.init_write(256*(16*offset+length)+offset, b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
+                wbm_inst_b.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
                 yield b_cyc_i.negedge
                 yield clk.posedge
@@ -269,7 +269,7 @@ def bench():
 
                 data = wbm_inst_b.get_read_data()
                 assert data[0] == 256*(16*offset+length)+offset
-                assert data[1] == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
+                assert data[1] == '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
         yield delay(100)
 
@@ -277,8 +277,8 @@ def bench():
         print("test 5: simultaneous read and write")
         current_test.next = 5
 
-        wbm_inst_a.init_write(8, b'\xAA\xAA\xAA\xAA')
-        wbm_inst_b.init_write(12, b'\xBB\xBB\xBB\xBB')
+        wbm_inst_a.init_write(8, '\xAA\xAA\xAA\xAA')
+        wbm_inst_b.init_write(12, '\xBB\xBB\xBB\xB')
 
         yield a_cyc_i.negedge
         yield clk.posedge
@@ -293,10 +293,10 @@ def bench():
         
         data = wbm_inst_a.get_read_data()
         assert data[0] == 12
-        assert data[1] == b'\xBB\xBB\xBB\xBB'
+        assert data[1] == '\xBB\xBB\xBB\xB'
         data = wbm_inst_b.get_read_data()
         assert data[0] == 8
-        assert data[1] == b'\xAA\xAA\xAA\xAA'
+        assert data[1] == '\xAA\xAA\xAA\xAA'
 
         yield delay(100)
 

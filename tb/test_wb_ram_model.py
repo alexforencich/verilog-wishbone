@@ -92,13 +92,13 @@ def bench():
         print("test 2: direct write")
         current_test.next = 2
 
-        wb_ram_inst.write_mem(0, b'test')
+        wb_ram_inst.write_mem(0, 'test')
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
             print(" ".join("{:02x}".format(ord(c)) for c in data[i:i+16]))
 
-        assert wb_ram_inst.read_mem(0,4) == b'test'
+        assert wb_ram_inst.read_mem(0,4) == 'test'
 
         yield delay(100)
 
@@ -128,7 +128,7 @@ def bench():
         for i in range(0, len(data), 16):
             print(" ".join("{:02x}".format(ord(c)) for c in data[i:i+16]))
 
-        assert wb_ram_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
+        assert wb_ram_inst.read_mem(4,4) == '\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -239,7 +239,7 @@ def bench():
                 for i in range(0, len(data), 16):
                     print(" ".join("{:02x}".format(ord(c)) for c in data[i:i+16]))
 
-                assert wb_ram_inst.read_mem(256*(16*offset+length)+offset,length) == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
+                assert wb_ram_inst.read_mem(256*(16*offset+length)+offset,length) == '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
         yield delay(100)
 

@@ -179,7 +179,7 @@ class WBMaster(object):
                         cyc_o.next = 0
 
                     elif cmd[0] == 'r':
-                        data = b''
+                        data = ''
                         # select for last access
                         sel_end = ((2**(ww)-1) >> (ww - (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)))
                         # number of cycles
