@@ -199,14 +199,12 @@ def bench():
 
         wbm_inst_a.init_write(4, '\x11\x22\x33\x44')
 
-        yield a_cyc_i.negedge
-        yield a_clk.posedge
+        yield wbm_inst_a.wait()
         yield a_clk.posedge
 
         wbm_inst_a.init_read(4, 4)
 
-        yield a_cyc_i.negedge
-        yield a_clk.posedge
+        yield wbm_inst_a.wait()
         yield a_clk.posedge
         
         data = wbm_inst_a.get_read_data()
@@ -221,14 +219,12 @@ def bench():
 
         wbm_inst_b.init_write(4, '\x11\x22\x33\x44')
 
-        yield b_cyc_i.negedge
-        yield b_clk.posedge
+        yield wbm_inst_b.wait()
         yield b_clk.posedge
 
         wbm_inst_b.init_read(4, 4)
 
-        yield b_cyc_i.negedge
-        yield b_clk.posedge
+        yield wbm_inst_b.wait()
         yield b_clk.posedge
         
         data = wbm_inst_b.get_read_data()
@@ -245,16 +241,14 @@ def bench():
             for offset in range(4):
                 wbm_inst_a.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
-                yield a_cyc_i.negedge
-                yield a_clk.posedge
+                yield wbm_inst_a.wait()
                 yield a_clk.posedge
 
         for length in range(1,8):
             for offset in range(4):
                 wbm_inst_a.init_read(256*(16*offset+length)+offset, length)
 
-                yield a_cyc_i.negedge
-                yield a_clk.posedge
+                yield wbm_inst_a.wait()
                 yield a_clk.posedge
 
                 data = wbm_inst_a.get_read_data()
@@ -271,16 +265,14 @@ def bench():
             for offset in range(4):
                 wbm_inst_b.init_write(256*(16*offset+length)+offset, '\x11\x22\x33\x44\x55\x66\x77\x88'[0:length])
 
-                yield b_cyc_i.negedge
-                yield b_clk.posedge
+                yield wbm_inst_b.wait()
                 yield b_clk.posedge
 
         for length in range(1,8):
             for offset in range(4):
                 wbm_inst_b.init_read(256*(16*offset+length)+offset, length)
 
-                yield b_cyc_i.negedge
-                yield b_clk.posedge
+                yield wbm_inst_b.wait()
                 yield b_clk.posedge
 
                 data = wbm_inst_b.get_read_data()
@@ -296,19 +288,15 @@ def bench():
         wbm_inst_a.init_write(8, '\xAA\xAA\xAA\xAA')
         wbm_inst_b.init_write(12, '\xBB\xBB\xBB\xBB')
 
-        yield a_cyc_i.negedge
-        yield a_clk.posedge
-        yield a_clk.posedge
-        yield a_clk.posedge
+        yield wbm_inst_a.wait()
+        yield wbm_inst_b.wait()
         yield a_clk.posedge
 
         wbm_inst_a.init_read(12, 4)
         wbm_inst_b.init_read(8, 4)
 
-        yield a_cyc_i.negedge
-        yield a_clk.posedge
-        yield a_clk.posedge
-        yield a_clk.posedge
+        yield wbm_inst_a.wait()
+        yield wbm_inst_b.wait()
         yield a_clk.posedge
 
         data = wbm_inst_a.get_read_data()
