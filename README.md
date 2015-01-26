@@ -42,7 +42,7 @@ Registers all wishbone signals.  Used to improve timing for long routes.
 
     rtl/wb_async_reg.v              : Asynchronous register
     rtl/wb_dp_ram.v                 : Dual port RAM
-    rtl/wb_mux_1x2.                 : 2 port WB mux
+    rtl/wb_mux_2.v                  : 2 port WB mux
     rtl/wb_mux.py                   : WB mux generator
     rtl/wb_ram.v                    : Single port RAM
     rtl/wb_reg.v                    : Register
