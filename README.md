@@ -23,6 +23,12 @@ wishbone bus cycles across clock domain boundaries.
 Dual-port, dual-clock RAM with parametrizable data and address interface
 widths.
 
+### wb_mux_N module
+
+Wishbone multiplexer with parametrizable data and address interface widths.
+
+Can be generated with arbitrary port counts with wb_mux.py.
+
 ### wb_ram module
 
 RAM with parametrizable data and address interface widths.
@@ -36,6 +42,8 @@ Registers all wishbone signals.  Used to improve timing for long routes.
 
     rtl/wb_async_reg.v              : Asynchronous register
     rtl/wb_dp_ram.v                 : Dual port RAM
+    rtl/wb_mux_1x2.                 : 2 port WB mux
+    rtl/wb_mux.py                   : WB mux generator
     rtl/wb_ram.v                    : Single port RAM
     rtl/wb_reg.v                    : Register
 
@@ -53,6 +61,8 @@ individual test scripts can be run with python directly.
     tb/test_wb_async_reg.v  : Verilog toplevel file for wb_async_reg cosimulation
     tb/test_wb_dp_ram.py    : MyHDL testbench for wb_dp_ram module
     tb/test_wb_dp_ram.v     : Verilog toplevel file for wb_dp_ram cosimulation
+    tb/test_wb_mux_2.py     : MyHDL testbench for wb_mux_2 module
+    tb/test_wb_mux_2.v      : Verilog toplevel file for wb_mux_2 cosimulation
     tb/test_wb_ram.py       : MyHDL testbench for wb_ram module
     tb/test_wb_ram.v        : Verilog toplevel file for wb_ram cosimulation
     tb/test_wb_ram_model.py : MyHDL testbench for RAM model
