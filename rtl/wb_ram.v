@@ -49,11 +49,11 @@ module wb_ram #
 );
 
 // for interfaces that are more than one word wide, disable address lines
-localparam VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(SELECT_WIDTH);
+parameter VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(SELECT_WIDTH);
 // width of data port in words (1, 2, 4, or 8)
-localparam WORD_WIDTH = SELECT_WIDTH;
+parameter WORD_WIDTH = SELECT_WIDTH;
 // size of words (8, 16, 32, or 64 bits)
-localparam WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
+parameter WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
 
 reg [DATA_WIDTH-1:0] dat_o_reg = {DATA_WIDTH{1'b0}};
 reg ack_o_reg = 1'b0;
