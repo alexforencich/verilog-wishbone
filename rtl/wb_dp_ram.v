@@ -60,11 +60,11 @@ module wb_dp_ram #
 );
 
 // for interfaces that are more than one word wide, disable address lines
-localparam VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(SELECT_WIDTH);
+parameter VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(SELECT_WIDTH);
 // width of data port in words (1, 2, 4, or 8)
-localparam WORD_WIDTH = SELECT_WIDTH;
+parameter WORD_WIDTH = SELECT_WIDTH;
 // size of words (8, 16, 32, or 64 bits)
-localparam WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
+parameter WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
 
 reg [DATA_WIDTH-1:0] a_dat_o_reg = {DATA_WIDTH{1'b0}};
 reg a_ack_o_reg = 1'b0;
@@ -95,16 +95,12 @@ end
 // port A
 always @(posedge a_clk) begin
     a_ack_o_reg <= 1'b0;
-    if (a_cyc_i & a_stb_i & ~a_ack_o) begin
-        if (a_we_i) begin
-            for (i = 0; i < WORD_WIDTH; i = i + 1) begin
-                if (a_sel_i[i]) begin
-                    mem[a_adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= a_dat_i[WORD_SIZE*i +: WORD_SIZE];
-                end
+    for (i = 0; i < WORD_WIDTH; i = i + 1) begin
+        if (a_cyc_i & a_stb_i & ~a_ack_o) begin
+            if (a_we_i & a_sel_i[i]) begin
+                mem[a_adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= a_dat_i[WORD_SIZE*i +: WORD_SIZE];
             end
-            a_ack_o_reg <= 1'b1;
-        end else begin
-            a_dat_o_reg <= mem[a_adr_i_valid];
+            a_dat_o_reg[WORD_SIZE*i +: WORD_SIZE] <= mem[a_adr_i_valid][WORD_SIZE*i +: WORD_SIZE];
             a_ack_o_reg <= 1'b1;
         end
     end
@@ -113,16 +109,12 @@ end
 // port B
 always @(posedge b_clk) begin
     b_ack_o_reg <= 1'b0;
-    if (b_cyc_i & b_stb_i & ~b_ack_o) begin
-        if (b_we_i) begin
-            for (i = 0; i < WORD_WIDTH; i = i + 1) begin
-                if (b_sel_i[i]) begin
-                    mem[b_adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= b_dat_i[WORD_SIZE*i +: WORD_SIZE];
-                end
+    for (i = 0; i < WORD_WIDTH; i = i + 1) begin
+        if (b_cyc_i & b_stb_i & ~b_ack_o) begin
+            if (b_we_i & b_sel_i[i]) begin
+                mem[b_adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= b_dat_i[WORD_SIZE*i +: WORD_SIZE];
             end
-            b_ack_o_reg <= 1'b1;
-        end else begin
-            b_dat_o_reg <= mem[b_adr_i_valid];
+            b_dat_o_reg[WORD_SIZE*i +: WORD_SIZE] <= mem[b_adr_i_valid][WORD_SIZE*i +: WORD_SIZE];
             b_ack_o_reg <= 1'b1;
         end
     end

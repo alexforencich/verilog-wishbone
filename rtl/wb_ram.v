@@ -76,16 +76,12 @@ end
 
 always @(posedge clk) begin
     ack_o_reg <= 1'b0;
-    if (cyc_i & stb_i & ~ack_o) begin
-        if (we_i) begin
-            for (i = 0; i < WORD_WIDTH; i = i + 1) begin
-                if (sel_i[i]) begin
-                    mem[adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= dat_i[WORD_SIZE*i +: WORD_SIZE];
-                end
+    for (i = 0; i < WORD_WIDTH; i = i + 1) begin
+        if (cyc_i & stb_i & ~ack_o) begin
+            if (we_i & sel_i[i]) begin
+                mem[adr_i_valid][WORD_SIZE*i +: WORD_SIZE] <= dat_i[WORD_SIZE*i +: WORD_SIZE];
             end
-            ack_o_reg <= 1'b1;
-        end else begin
-            dat_o_reg <= mem[adr_i_valid];
+            dat_o_reg[WORD_SIZE*i +: WORD_SIZE] <= mem[adr_i_valid][WORD_SIZE*i +: WORD_SIZE];
             ack_o_reg <= 1'b1;
         end
     end
