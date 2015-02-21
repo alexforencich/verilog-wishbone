@@ -31,9 +31,9 @@ THE SOFTWARE.
  */
 module wb_async_reg #
 (
-    parameter DATA_WIDTH = 32,  // width of data bus in bits (8, 16, 32, or 64)
-    parameter ADDR_WIDTH = 32,  // width of address bus in bits
-    parameter SELECT_WIDTH = 4  // width of word select bus (1, 2, 4, or 8)
+    parameter DATA_WIDTH = 32,                  // width of data bus in bits (8, 16, 32, or 64)
+    parameter ADDR_WIDTH = 32,                  // width of address bus in bits
+    parameter SELECT_WIDTH = (DATA_WIDTH/8)     // width of word select bus (1, 2, 4, or 8)
 )
 (
     // master side
