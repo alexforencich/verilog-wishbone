@@ -319,7 +319,7 @@ class WBRam(object):
 
                 ack_o.next = False
 
-                addr = int(adr_i/bw)*bw
+                addr = int(int(adr_i)/bw)*bw
 
                 if cyc_i & stb_i & ~ack_o:
                     if async:
