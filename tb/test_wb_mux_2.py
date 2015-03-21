@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 
 Copyright (c) 2015 Alex Forencich
@@ -277,16 +277,16 @@ def bench():
         print("test 1: write to slave 0")
         current_test.next = 1
 
-        wbm_inst.init_write(0x00000004, '\x11\x22\x33\x44')
+        wbm_inst.init_write(0x00000004, b'\x11\x22\x33\x44')
 
         yield wbm_inst.wait()
         yield clk.posedge
 
         data = wb_ram0_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join("{:02x}".format(ord(c)) for c in data[i:i+16]))
+            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
 
-        assert wb_ram0_inst.read_mem(4,4) == '\x11\x22\x33\x44'
+        assert wb_ram0_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -301,7 +301,7 @@ def bench():
 
         data = wbm_inst.get_read_data()
         assert data[0] == 0x00000004
-        assert data[1] == '\x11\x22\x33\x44'
+        assert data[1] == b'\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -309,16 +309,16 @@ def bench():
         print("test 3: write to slave 1")
         current_test.next = 3
 
-        wbm_inst.init_write(0x00010004, '\x11\x22\x33\x44')
+        wbm_inst.init_write(0x00010004, b'\x11\x22\x33\x44')
 
         yield wbm_inst.wait()
         yield clk.posedge
 
         data = wb_ram1_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join("{:02x}".format(ord(c)) for c in data[i:i+16]))
+            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
 
-        assert wb_ram1_inst.read_mem(4,4) == '\x11\x22\x33\x44'
+        assert wb_ram1_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
 
         yield delay(100)
 
@@ -333,7 +333,7 @@ def bench():
 
         data = wbm_inst.get_read_data()
         assert data[0] == 0x00010004
-        assert data[1] == '\x11\x22\x33\x44'
+        assert data[1] == b'\x11\x22\x33\x44'
 
         yield delay(100)
 

@@ -23,8 +23,12 @@ THE SOFTWARE.
 """
 
 from myhdl import *
-from Queue import Queue
 import mmap
+
+try:
+    from queue import Queue
+except ImportError:
+    from Queue import Queue
 
 class WBMaster(object):
     def __init__(self):
@@ -102,7 +106,7 @@ class WBMaster(object):
                     # address in words
                     adw = int(cmd[1]/ws)*ws
                     # select for first access
-                    sel_start = ((2**(ww)-1) << (adw/ws) % ww) & (2**(ww)-1)
+                    sel_start = ((2**(ww)-1) << int((adw/ws) % ww)) & (2**(ww)-1)
 
                     # cannot address within words
                     assert cmd[1] == adw
@@ -110,13 +114,13 @@ class WBMaster(object):
                     if cmd[0] == 'w':
                         data = cmd[2]
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> (ww - (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)))
+                        sel_end = ((2**(ww)-1) >> int(ww - (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)))
                         # number of cycles
                         cycles = int((len(data) + bw-1 + (cmd[1] % bw)) / bw)
                         i = 0
 
                         if name is not None:
-                            print("[%s] Write data a:0x%08x d:%s" % (name, adw, " ".join("{:02x}".format(ord(c)) for c in data)))
+                            print("[%s] Write data a:0x%08x d:%s" % (name, adw, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
                         cyc_o.next = 1
 
@@ -127,7 +131,7 @@ class WBMaster(object):
                         val = 0
                         for j in range(bw):
                             if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)):
-                                val |= ord(data[i]) << j*8
+                                val |= bytearray(data)[i] << j*8
                                 i += 1
                         dat_o.next = val
 
@@ -151,7 +155,7 @@ class WBMaster(object):
                             adr_o.next = addr + k * bw
                             val = 0
                             for j in range(bw):
-                                val |= ord(data[i]) << j*8
+                                val |= bytearray(data)[i] << j*8
                                 i += 1
                             dat_o.next = val
                             sel_o.next = 2**(ww)-1
@@ -172,7 +176,7 @@ class WBMaster(object):
                             val = 0
                             for j in range(bw):
                                 if int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1):
-                                    val |= ord(data[i]) << j*8
+                                    val |= bytearray(data)[i] << j*8
                                     i += 1
                             dat_o.next = val
                             sel_o.next = sel_end
@@ -190,9 +194,9 @@ class WBMaster(object):
                         cyc_o.next = 0
 
                     elif cmd[0] == 'r':
-                        data = ''
+                        data = b''
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> (ww - (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)))
+                        sel_end = ((2**(ww)-1) >> int(ww - (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)))
                         # number of cycles
                         cycles = int((cmd[2] + bw-1 + (cmd[1] % bw)) / bw)
 
@@ -216,7 +220,7 @@ class WBMaster(object):
 
                         for j in range(bw):
                             if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)):
-                                data += chr((val >> j*8) & 255)
+                                data += bytes(bytearray([(val >> j*8) & 255]))
 
                         for k in range(1, cycles-1):
                             # middle cycles
@@ -234,7 +238,7 @@ class WBMaster(object):
                             val = int(dat_i)
 
                             for j in range(bw):
-                                data += chr((val >> j*8) & 255)
+                                data += bytes(bytearray([(val >> j*8) & 255]))
 
                         if cycles > 1:
                             # last cycle
@@ -253,13 +257,13 @@ class WBMaster(object):
 
                             for j in range(bw):
                                 if int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1):
-                                    data += chr((val >> j*8) & 255)
+                                    data += bytes(bytearray([(val >> j*8) & 255]))
 
                         stb_o.next = 0
                         cyc_o.next = 0
 
                         if name is not None:
-                            print("[%s] Read data a:0x%08x d:%s" % (name, adw, " ".join("{:02x}".format(ord(c)) for c in data)))
+                            print("[%s] Read data a:0x%08x d:%s" % (name, adw, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
                         self.read_data_queue.put((adw, data))
 
@@ -306,7 +310,7 @@ class WBRam(object):
 
             bw = int(w/8)
             ww = len(sel_i)
-            ws = bw/ww
+            ws = int(bw/ww)
 
             assert ww in (1, 2, 4, 8)
             assert ws in (1, 2, 4, 8)
@@ -332,28 +336,28 @@ class WBRam(object):
                     if we_i:
                         # write
                         #yield clk.posedge
-                        data = []
+                        data = b''
                         val = int(dat_i)
                         for i in range(bw):
-                            data.append(bytes(bytearray([val & 0xff])))
+                            data += bytes(bytearray([val & 0xff]))
                             val >>= 8
                         for i in range(ww):
                             for j in range(ws):
                                 if sel_i & (1 << i):
-                                    self.mem.write(data[i*ws+j])
+                                    self.mem.write(data[i*ws+j:i*ws+j+1])
                                 else:
                                     self.mem.seek(1, 1)
                         if name is not None:
-                            print("[%s] Write word a:0x%08x sel:0x%02x d:%s" % (name, addr, sel_i, " ".join("{:02x}".format(ord(c)) for c in data)))
+                            print("[%s] Write word a:0x%08x sel:0x%02x d:%s" % (name, addr, sel_i, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
                     else:
                         data = self.mem.read(bw)
                         val = 0
                         for i in range(bw-1,-1,-1):
                             val <<= 8
-                            val += ord(data[i])
+                            val += bytearray(data)[i]
                         dat_o.next = val
                         if name is not None:
-                            print("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join("{:02x}".format(ord(c)) for c in data)))
+                            print("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
         return logic
 
