@@ -41,11 +41,38 @@ class WBMaster(object):
     def init_read(self, address, length):
         self.command_queue.put(('r', address, length))
 
+    def init_read_words(self, address, length, ws=2):
+        assert ws in (1, 2, 4, 8)
+        self.init_read(int(address*ws), int(length*ws))
+
+    def init_read_dwords(self, address, length):
+        self.init_read_words(address, length, 4)
+
+    def init_read_qwords(self, address, length):
+        self.init_read_words(address, length, 8)
+
     def init_write(self, address, data):
         self.command_queue.put(('w', address, data))
 
+    def init_write_words(self, address, data, ws=2):
+        assert ws in (1, 2, 4, 8)
+        data2 = []
+        for w in data:
+            d = []
+            for j in range(ws):
+                d.append(w&0xff)
+                w >>= 8
+            data2.extend(bytearray(d))
+        self.init_write(int(address*ws), data2)
+
+    def init_write_dwords(self, address, data):
+        self.init_write_words(address, data, 4)
+
+    def init_write_qwords(self, address, data):
+        self.init_write_words(address, data, 8)
+
     def idle(self):
-        return self.command_queue.empty() and not bool(self.cyc_o)
+        return self.command_queue.empty() and not self.cyc_o.next
 
     def wait(self):
         while not self.idle():
@@ -56,6 +83,27 @@ class WBMaster(object):
 
     def get_read_data(self):
         return self.read_data_queue.get(False)
+
+    def get_read_data_words(self, ws=2):
+        assert ws in (1, 2, 4, 8)
+        v = self.get_read_data()
+        if v is None:
+            return None
+        address, data = v
+        d = []
+        for i in range(int(len(data)/ws)):
+            w = 0
+            for j in range(ws-1,-1,-1):
+                w <<= 8
+                w += data[i*ws+j]
+            d.append(w)
+        return (int(address/ws), d)
+
+    def get_read_data_dwords(self):
+        return self.get_read_data_words(4)
+
+    def get_read_data_qwords(self):
+        return self.get_read_data_words(8)
 
     def create_logic(self,
                      clk,
@@ -87,9 +135,9 @@ class WBMaster(object):
             if dat_i is not None and dat_o is not None:
                 assert len(dat_i) == len(dat_o)
 
-            bw = int(w/8)
-            ww = len(sel_o)
-            ws = bw/ww
+            bw = int(w/8)   # width of bus in bytes
+            ww = len(sel_o) # width of bus in words
+            ws = int(bw/ww) # word size in bytes
 
             assert ww in (1, 2, 4, 8)
             assert ws in (1, 2, 4, 8)
@@ -101,36 +149,33 @@ class WBMaster(object):
                 if not self.command_queue.empty():
                     cmd = self.command_queue.get(False)
 
-                    # address in full word width
-                    addr = int(cmd[1]/bw)*bw
+                    # address
+                    addr = cmd[1]
                     # address in words
-                    adw = int(cmd[1]/ws)*ws
+                    adw = int(addr/ws)
                     # select for first access
-                    sel_start = ((2**(ww)-1) << int((adw/ws) % ww)) & (2**(ww)-1)
-
-                    # cannot address within words
-                    assert cmd[1] == adw
+                    sel_start = ((2**(ww)-1) << int(adw % ww)) & (2**(ww)-1)
 
                     if cmd[0] == 'w':
                         data = cmd[2]
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> int(ww - (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)))
+                        sel_end = (2**(ww)-1) >> int(ww - (((int((addr+len(data)-1)/ws)) % ww) + 1))
                         # number of cycles
-                        cycles = int((len(data) + bw-1 + (cmd[1] % bw)) / bw)
+                        cycles = int((len(data) + bw-1 + (addr % bw)) / bw)
                         i = 0
 
                         if name is not None:
-                            print("[%s] Write data a:0x%08x d:%s" % (name, adw, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print("[%s] Write data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
                         cyc_o.next = 1
 
                         # first cycle
                         stb_o.next = 1
                         we_o.next = 1
-                        adr_o.next = addr
+                        adr_o.next = int(adw/ww)*ww
                         val = 0
                         for j in range(bw):
-                            if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1)):
+                            if j >= addr % bw and (cycles > 1 or j < (((addr + len(data) - 1) % bw) + 1)):
                                 val |= bytearray(data)[i] << j*8
                                 i += 1
                         dat_o.next = val
@@ -152,7 +197,7 @@ class WBMaster(object):
                             yield clk.posedge
                             stb_o.next = 1
                             we_o.next = 1
-                            adr_o.next = addr + k * bw
+                            adr_o.next = int(adw/ww)*ww + k * ww
                             val = 0
                             for j in range(bw):
                                 val |= bytearray(data)[i] << j*8
@@ -172,10 +217,10 @@ class WBMaster(object):
                             yield clk.posedge
                             stb_o.next = 1
                             we_o.next = 1
-                            adr_o.next = addr + (cycles-1) * bw
+                            adr_o.next = int(adw/ww)*ww + (cycles-1) * ww
                             val = 0
                             for j in range(bw):
-                                if int(j/ws) < (((adw/ws + int(len(data)/ws) - 1) % ww) + 1):
+                                if j < (((addr + len(data) - 1) % bw) + 1):
                                     val |= bytearray(data)[i] << j*8
                                     i += 1
                             dat_o.next = val
@@ -194,17 +239,18 @@ class WBMaster(object):
                         cyc_o.next = 0
 
                     elif cmd[0] == 'r':
+                        length = cmd[2]
                         data = b''
                         # select for last access
-                        sel_end = ((2**(ww)-1) >> int(ww - (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)))
+                        sel_end = (2**(ww)-1) >> int(ww - (((int((addr+length-1)/ws)) % ww) + 1))
                         # number of cycles
-                        cycles = int((cmd[2] + bw-1 + (cmd[1] % bw)) / bw)
+                        cycles = int((length + bw-1 + (addr % bw)) / bw)
 
                         cyc_o.next = 1
 
                         # first cycle
                         stb_o.next = 1
-                        adr_o.next = addr
+                        adr_o.next = int(adw/ww)*ww
                         if cycles == 1:
                             sel_o.next = sel_start & sel_end
                         else:
@@ -219,14 +265,14 @@ class WBMaster(object):
                         val = int(dat_i)
 
                         for j in range(bw):
-                            if int(j/ws) >= (adw/ws) % ww and (cycles > 1 or int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1)):
+                            if j >= addr % bw and (cycles > 1 or j < (((addr + length - 1) % bw) + 1)):
                                 data += bytes(bytearray([(val >> j*8) & 255]))
 
                         for k in range(1, cycles-1):
                             # middle cycles
                             yield clk.posedge
                             stb_o.next = 1
-                            adr_o.next = addr + k * bw
+                            adr_o.next = int(adw/ww)*ww + k * ww
                             sel_o.next = 2**(ww)-1
 
                             yield clk.posedge
@@ -244,7 +290,7 @@ class WBMaster(object):
                             # last cycle
                             yield clk.posedge
                             stb_o.next = 1
-                            adr_o.next = addr + (cycles-1) * bw
+                            adr_o.next = int(adw/ww)*ww + (cycles-1) * ww
                             sel_o.next = sel_end
 
                             yield clk.posedge
@@ -256,16 +302,16 @@ class WBMaster(object):
                             val = int(dat_i)
 
                             for j in range(bw):
-                                if int(j/ws) < (((adw/ws + int(cmd[2]/ws) - 1) % ww) + 1):
+                                if j < (((addr + length - 1) % bw) + 1):
                                     data += bytes(bytearray([(val >> j*8) & 255]))
 
                         stb_o.next = 0
                         cyc_o.next = 0
 
                         if name is not None:
-                            print("[%s] Read data a:0x%08x d:%s" % (name, adw, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print("[%s] Read data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
-                        self.read_data_queue.put((adw, data))
+                        self.read_data_queue.put((addr, data))
 
         return logic
 
@@ -282,6 +328,41 @@ class WBRam(object):
     def write_mem(self, address, data):
         self.mem.seek(address)
         self.mem.write(data)
+
+    def read_words(self, address, length, ws=2):
+        assert ws in (1, 2, 4, 8)
+        self.mem.seek(int(address*ws))
+        d = []
+        for i in range(length):
+            w = 0
+            data = bytearray(self.mem.read(ws))
+            for j in range(ws-1,-1,-1):
+                w <<= 8
+                w += data[j]
+            d.append(w)
+        return d
+
+    def read_dwords(self, address, length):
+        return self.read_words(address, length, 4)
+
+    def read_qwords(self, address, length):
+        return self.read_words(address, length, 8)
+
+    def write_words(self, address, data, ws=2):
+        assert ws in (1, 2, 4, 8)
+        self.mem.seek(int(address*ws))
+        for w in data:
+            d = []
+            for j in range(ws):
+                d.append(w&0xff)
+                w >>= 8
+            self.mem.write(bytearray(d))
+
+    def write_dwords(self, address, length):
+        return self.write_words(address, length, 4)
+
+    def write_qwords(self, address, length):
+        return self.write_words(address, length, 8)
 
     def create_port(self,
                     clk,
@@ -308,9 +389,9 @@ class WBRam(object):
             if dat_i is not None and dat_o is not None:
                 assert len(dat_i) == len(dat_o)
 
-            bw = int(w/8)
-            ww = len(sel_i)
-            ws = int(bw/ww)
+            bw = int(w/8)   # width of bus in bytes
+            ww = len(sel_i) # width of bus in words
+            ws = int(bw/ww) # word size in bytes
 
             assert ww in (1, 2, 4, 8)
             assert ws in (1, 2, 4, 8)
@@ -323,7 +404,8 @@ class WBRam(object):
 
                 ack_o.next = False
 
-                addr = int(int(adr_i)/bw)*bw
+                # address in increments of bus word width
+                addr = int(int(adr_i)/ww)*ww
 
                 if cyc_i & stb_i & ~ack_o:
                     if async:
@@ -332,29 +414,28 @@ class WBRam(object):
                         for i in range(latency):
                             yield clk.posedge
                     ack_o.next = True
-                    self.mem.seek(addr % self.size)
+                    self.mem.seek(addr*ws % self.size)
                     if we_i:
                         # write
-                        #yield clk.posedge
-                        data = b''
+                        data = []
                         val = int(dat_i)
                         for i in range(bw):
-                            data += bytes(bytearray([val & 0xff]))
+                            data += [val & 0xff]
                             val >>= 8
+                        data = bytearray(data)
                         for i in range(ww):
-                            for j in range(ws):
-                                if sel_i & (1 << i):
-                                    self.mem.write(data[i*ws+j:i*ws+j+1])
-                                else:
-                                    self.mem.seek(1, 1)
+                            if sel_i & (1 << i):
+                                self.mem.write(data[i*ws:(i+1)*ws])
+                            else:
+                                self.mem.seek(ws, 1)
                         if name is not None:
                             print("[%s] Write word a:0x%08x sel:0x%02x d:%s" % (name, addr, sel_i, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
                     else:
-                        data = self.mem.read(bw)
+                        data = bytearray(self.mem.read(bw))
                         val = 0
                         for i in range(bw-1,-1,-1):
                             val <<= 8
-                            val += bytearray(data)[i]
+                            val += data[i]
                         dat_o.next = val
                         if name is not None:
                             print("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))

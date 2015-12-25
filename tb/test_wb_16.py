@@ -38,7 +38,7 @@ def bench():
     port0_adr_i = Signal(intbv(0)[32:])
     port0_dat_i = Signal(intbv(0)[32:])
     port0_we_i = Signal(bool(0))
-    port0_sel_i = Signal(intbv(0)[4:])
+    port0_sel_i = Signal(intbv(0)[2:])
     port0_stb_i = Signal(bool(0))
     port0_cyc_i = Signal(bool(0))
 
