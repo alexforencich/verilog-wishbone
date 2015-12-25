@@ -11,7 +11,7 @@ from jinja2 import Template
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.strip())
-    parser.add_argument('-p', '--ports',  type=int, default=4, help="number of ports")
+    parser.add_argument('-p', '--ports',  type=int, default=2, help="number of ports")
     parser.add_argument('-n', '--name',   type=str, help="module name")
     parser.add_argument('-o', '--output', type=str, help="output file name")
 
@@ -23,7 +23,7 @@ def main():
         print(ex)
         exit(1)
 
-def generate(ports=4, name=None, output=None):
+def generate(ports=2, name=None, output=None):
     if name is None:
         name = "wb_mux_{0}".format(ports)
 
