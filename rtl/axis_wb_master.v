@@ -108,8 +108,13 @@ initial begin
         $finish;
     end
 
-    if (AXIS_DATA_WORD_SIZE > WB_WORD_SIZE) begin
-        $error("Error: AXI word size larger than WB word size");
+    if (2**$clog2(WB_WORD_WIDTH) != WB_WORD_WIDTH) begin
+        $error("Error: WB word width must be even power of two");
+        $finish;
+    end
+
+    if (AXIS_DATA_WORD_SIZE*2**$clog2(WB_WORD_SIZE/AXIS_DATA_WORD_SIZE) != WB_WORD_SIZE) begin
+        $error("Error: WB word size must be a power of two multiple of the AXI word size");
         $finish;
     end
 
