@@ -96,6 +96,9 @@ parameter WB_WORD_WIDTH = WB_SELECT_WIDTH;
 // size of words (8, 16, 32, or 64 bits)
 parameter WB_WORD_SIZE = WB_DATA_WIDTH/WB_WORD_WIDTH;
 
+localparam COUNT_WORD_WIDTH = (COUNT_SIZE+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE;
+localparam ADDR_WORD_WIDTH = (WB_ADDR_WIDTH+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE;
+
 // bus width assertions
 initial begin
     if (AXIS_KEEP_WIDTH * AXIS_DATA_WORD_SIZE != AXIS_DATA_WIDTH) begin
@@ -212,7 +215,7 @@ always @* begin
                     output_axis_tlast_next = 1'b0;
                     output_axis_tuser_next = 1'b0;
                     wb_we_o_next = 1'b0;
-                    count_next = (WB_ADDR_WIDTH+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE+(COUNT_SIZE+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE-1;
+                    count_next = COUNT_WORD_WIDTH+ADDR_WORD_WIDTH-1;
                     state_next = STATE_HEADER;
                 end else if (input_axis_tdata == WRITE_REQ) begin
                     // start of write
@@ -221,7 +224,7 @@ always @* begin
                     output_axis_tlast_next = 1'b0;
                     output_axis_tuser_next = 1'b0;
                     wb_we_o_next = 1'b1;
-                    count_next = (WB_ADDR_WIDTH+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE+(COUNT_SIZE+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE-1;
+                    count_next = COUNT_WORD_WIDTH+ADDR_WORD_WIDTH-1;
                     state_next = STATE_HEADER;
                 end else begin
                     if (IMPLICIT_FRAMING) begin
@@ -243,10 +246,10 @@ always @* begin
                 output_axis_tvalid_next = 1'b1;
                 output_axis_tlast_next = 1'b0;
                 output_axis_tuser_next = 1'b0;
-                if (count_reg < 2) begin
+                if (count_reg < COUNT_WORD_WIDTH) begin
                     ptr_next[AXIS_DATA_WORD_SIZE*count_reg +: AXIS_DATA_WORD_SIZE] = input_axis_tdata;
                 end else begin
-                    addr_next[AXIS_DATA_WORD_SIZE*(count_reg-2) +: AXIS_DATA_WORD_SIZE] = input_axis_tdata;
+                    addr_next[AXIS_DATA_WORD_SIZE*(count_reg-COUNT_WORD_WIDTH) +: AXIS_DATA_WORD_SIZE] = input_axis_tdata;
                 end
                 count_next = count_reg - 1;
                 if (count_reg == 0) begin
