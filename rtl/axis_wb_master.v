@@ -96,8 +96,12 @@ parameter WB_WORD_WIDTH = WB_SELECT_WIDTH;
 // size of words (8, 16, 32, or 64 bits)
 parameter WB_WORD_SIZE = WB_DATA_WIDTH/WB_WORD_WIDTH;
 
+localparam WORD_PART_ADDR_WIDTH = $clog2(WB_WORD_SIZE/AXIS_DATA_WORD_SIZE);
+
+localparam ADDR_WIDTH_ADJ = WB_ADDR_WIDTH+WORD_PART_ADDR_WIDTH;
+
 localparam COUNT_WORD_WIDTH = (COUNT_SIZE+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE;
-localparam ADDR_WORD_WIDTH = (WB_ADDR_WIDTH+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE;
+localparam ADDR_WORD_WIDTH = (ADDR_WIDTH_ADJ+AXIS_DATA_WORD_SIZE-1)/AXIS_DATA_WORD_SIZE;
 
 // bus width assertions
 initial begin
@@ -142,7 +146,7 @@ reg [COUNT_SIZE-1:0] ptr_reg = {COUNT_SIZE{1'b0}}, ptr_next;
 reg [7:0] count_reg = 8'd0, count_next;
 reg last_cycle_reg = 1'b0;
 
-reg [WB_ADDR_WIDTH-1:0] addr_reg = {WB_ADDR_WIDTH{1'b0}}, addr_next;
+reg [ADDR_WIDTH_ADJ-1:0] addr_reg = {ADDR_WIDTH_ADJ{1'b0}}, addr_next;
 reg [WB_DATA_WIDTH-1:0] data_reg = {WB_DATA_WIDTH{1'b0}}, data_next;
 
 reg input_axis_tready_reg = 1'b0, input_axis_tready_next;
@@ -168,7 +172,7 @@ assign output_axis_tvalid = output_axis_tvalid_reg;
 assign output_axis_tlast = output_axis_tlast_reg;
 assign output_axis_tuser = output_axis_tuser_reg;
 
-assign wb_adr_o = {addr_reg[WB_ADDR_WIDTH-1:WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH], {WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH{1'b0}}};
+assign wb_adr_o = {addr_reg[ADDR_WIDTH_ADJ-1:ADDR_WIDTH_ADJ-WB_VALID_ADDR_WIDTH], {WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH{1'b0}}};
 assign wb_dat_o = data_reg;
 assign wb_we_o = wb_we_o_reg;
 assign wb_sel_o = wb_sel_o_reg;
@@ -253,10 +257,10 @@ always @* begin
                 end
                 count_next = count_reg - 1;
                 if (count_reg == 0) begin
-                    if (WB_ADDR_WIDTH == WB_VALID_ADDR_WIDTH) begin
+                    if (WB_ADDR_WIDTH == WB_VALID_ADDR_WIDTH && WORD_PART_ADDR_WIDTH == 0) begin
                         count_next = 0;
                     end else begin
-                        count_next = addr_reg[WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH-1:0];
+                        count_next = addr_reg[ADDR_WIDTH_ADJ-WB_VALID_ADDR_WIDTH-1:0];
                     end
                     wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
                     data_next = {WB_DATA_WIDTH{1'b0}};
@@ -303,7 +307,7 @@ always @* begin
 
             if (wb_ack_i || wb_err_i) begin
                 data_next = wb_dat_i;
-                addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH));
+                addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH+WORD_PART_ADDR_WIDTH));
                 wb_cyc_o_next = 1'b0;
                 wb_stb_o_next = 1'b0;
                 wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
@@ -376,7 +380,7 @@ always @* begin
 
             if (wb_ack_i || wb_err_i) begin
                 data_next = {WB_DATA_WIDTH{1'b0}};
-                addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH));
+                addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH+WORD_PART_ADDR_WIDTH));
                 wb_cyc_o_next = 1'b0;
                 wb_stb_o_next = 1'b0;
                 wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
