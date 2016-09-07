@@ -208,6 +208,7 @@ always @* begin
 
             if (input_axis_tready & input_axis_tvalid) begin
                 if (!IMPLICIT_FRAMING & input_axis_tlast) begin
+                    // last asserted, ignore cycle
                     state_next = STATE_IDLE;
                 end else if (input_axis_tdata == READ_REQ) begin
                     // start of read
@@ -228,9 +229,12 @@ always @* begin
                     count_next = COUNT_WORD_WIDTH+ADDR_WORD_WIDTH-1;
                     state_next = STATE_HEADER;
                 end else begin
+                    // invalid start of packet
                     if (IMPLICIT_FRAMING) begin
+                        // drop byte
                         state_next = STATE_IDLE;
                     end else begin
+                        // drop packet
                         state_next = STATE_WAIT_LAST;
                     end
                 end
@@ -243,10 +247,12 @@ always @* begin
             input_axis_tready_next = output_axis_tready_int_early;
 
             if (input_axis_tready & input_axis_tvalid) begin
+                // pass through
                 output_axis_tdata_int = input_axis_tdata;
                 output_axis_tvalid_int = 1'b1;
                 output_axis_tlast_int = 1'b0;
                 output_axis_tuser_int = 1'b0;
+                // store pointers
                 if (count_reg < COUNT_WORD_WIDTH) begin
                     ptr_next[AXIS_DATA_WORD_SIZE*count_reg +: AXIS_DATA_WORD_SIZE] = input_axis_tdata;
                 end else begin
@@ -254,6 +260,8 @@ always @* begin
                 end
                 count_next = count_reg - 1;
                 if (count_reg == 0) begin
+                    // end of header
+                    // set initial word offset
                     if (WB_ADDR_WIDTH == WB_VALID_ADDR_WIDTH && WORD_PART_ADDR_WIDTH == 0) begin
                         count_next = 0;
                     end else begin
@@ -262,7 +270,9 @@ always @* begin
                     wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
                     data_next = {WB_DATA_WIDTH{1'b0}};
                     if (wb_we_o_reg) begin
+                        // start writing
                         if (input_axis_tlast) begin
+                            // end of frame in header
                             output_axis_tlast_int = 1'b1;
                             output_axis_tuser_int = 1'b1;
                             state_next = STATE_IDLE;
@@ -271,6 +281,7 @@ always @* begin
                             state_next = STATE_WRITE_1;
                         end
                     end else begin
+                        // start reading
                         if (IMPLICIT_FRAMING) begin
                             input_axis_tready_next = 1'b0;
                         end else begin
@@ -309,6 +320,7 @@ always @* begin
             end
 
             if (wb_ack_i || wb_err_i) begin
+                // read cycle complete, store result
                 data_next = wb_dat_i;
                 addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH+WORD_PART_ADDR_WIDTH));
                 wb_cyc_o_next = 1'b0;
@@ -328,6 +340,7 @@ always @* begin
             end
 
             if (output_axis_tready_int_reg) begin
+                // transfer word and update pointers
                 output_axis_tdata_int = data_reg[AXIS_DATA_WORD_SIZE*count_reg +: AXIS_DATA_WORD_SIZE];
                 output_axis_tvalid_int = 1'b1;
                 output_axis_tlast_int = 1'b0;
@@ -335,6 +348,7 @@ always @* begin
                 count_next = count_reg + 1;
                 ptr_next = ptr_reg - 1;
                 if (ptr_reg == 1) begin
+                    // last word of read
                     output_axis_tlast_int = 1'b1;
                     if (!IMPLICIT_FRAMING && !(last_cycle_reg || (input_axis_tvalid & input_axis_tlast))) begin
                         state_next = STATE_WAIT_LAST;
@@ -343,6 +357,7 @@ always @* begin
                         state_next = STATE_IDLE;
                     end
                 end else if (count_reg == (WB_SELECT_WIDTH*WB_WORD_SIZE/AXIS_DATA_WORD_SIZE)-1) begin
+                    // end of stored data word; read the next one
                     count_next = 0;
                     wb_cyc_o_next = 1'b1;
                     wb_stb_o_next = 1'b1;
@@ -359,11 +374,13 @@ always @* begin
             input_axis_tready_next = 1'b1;
 
             if (input_axis_tready & input_axis_tvalid) begin
+                // store word
                 data_next[AXIS_DATA_WORD_SIZE*count_reg +: AXIS_DATA_WORD_SIZE] = input_axis_tdata;
                 count_next = count_reg + 1;
                 ptr_next = ptr_reg - 1;
                 wb_sel_o_next[count_reg >> ((WB_WORD_SIZE/AXIS_DATA_WORD_SIZE)-1)] = 1'b1;
                 if (count_reg == (WB_SELECT_WIDTH*WB_WORD_SIZE/AXIS_DATA_WORD_SIZE)-1 || ptr_reg == 1) begin
+                    // have full word or at end of block, start write operation
                     count_next = 0;
                     input_axis_tready_next = 1'b0;
                     wb_cyc_o_next = 1'b1;
@@ -382,12 +399,14 @@ always @* begin
             wb_stb_o_next = 1'b1;
 
             if (wb_ack_i || wb_err_i) begin
+                // end of write operation
                 data_next = {WB_DATA_WIDTH{1'b0}};
                 addr_next = addr_reg + (1 << (WB_ADDR_WIDTH-WB_VALID_ADDR_WIDTH+WORD_PART_ADDR_WIDTH));
                 wb_cyc_o_next = 1'b0;
                 wb_stb_o_next = 1'b0;
                 wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
                 if (ptr_reg == 0) begin
+                    // done writing
                     if (!IMPLICIT_FRAMING && !last_cycle_reg) begin
                         input_axis_tready_next = 1'b1;
                         state_next = STATE_WAIT_LAST;
@@ -396,6 +415,7 @@ always @* begin
                         state_next = STATE_IDLE;
                     end
                 end else begin
+                    // more to write
                     state_next = STATE_WRITE_1;
                 end
             end else begin
@@ -407,6 +427,7 @@ always @* begin
             input_axis_tready_next = 1'b1;
 
             if (input_axis_tready & input_axis_tvalid) begin
+                // wait for tlast
                 if (input_axis_tlast) begin
                     input_axis_tready_next = output_axis_tready_int_early;
                     state_next = STATE_IDLE;
