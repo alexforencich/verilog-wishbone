@@ -12,6 +12,34 @@ intelligent bus cosimulation endpoints.
 
 ## Documentation
 
+### arbiter module
+
+General-purpose parametrizable arbiter.  Supports priority and round-robin
+arbitration.  Supports blocking until request release or acknowledge. 
+
+### axis_wb_master module
+
+AXI Stream Wishbone master.  Intended to be used to bridge a streaming
+or packet-based protocol (serial, ethernet, etc.) to a Wishbone bus.
+
+### priority_encoder module
+
+Parametrizable priority encoder.
+
+### wb_adapter module
+
+Width adapter module to bridge wishbone buses of differing widths.  The module
+is parametrizable, but their are certain restrictions.  First, the bus word
+widths must be identical (same data bus width per select line).  Second, the
+bus widths must be related by an integer multiple (e.g. 2 words and 6 words,
+but not 4 words and 6 words).
+
+### wb_arbiter_N module
+
+Parametrizable arbiter module to enable sharing between multiple masters.
+
+Can be generated with arbitrary port counts with wb_arbiter.py.
+
 ### wb_async_reg module
 
 Asynchronous register module for clock domain crossing with parametrizable
@@ -40,12 +68,18 @@ Registers all wishbone signals.  Used to improve timing for long routes.
 
 ### Source Files
 
-    rtl/wb_async_reg.v              : Asynchronous register
-    rtl/wb_dp_ram.v                 : Dual port RAM
-    rtl/wb_mux_2.v                  : 2 port WB mux
-    rtl/wb_mux.py                   : WB mux generator
-    rtl/wb_ram.v                    : Single port RAM
-    rtl/wb_reg.v                    : Register
+    arbiter.v                   : General-purpose parametrizable arbiter
+    axis_wb_master.v            : AXI Stream Wishbone master
+    priority_encoder.v          : Parametrizable priority encoder
+    wb_adapter.v                : Parametrizable bus width adapter
+    wb_arbiter.py               : Arbiter generator
+    wb_arbiter_2.py             : 2 port WB arbiter
+    wb_async_reg.v              : Asynchronous register
+    wb_dp_ram.v                 : Dual port RAM
+    wb_mux.py                   : WB mux generator
+    wb_mux_2.v                  : 2 port WB mux
+    wb_ram.v                    : Single port RAM
+    wb_reg.v                    : Register
 
 ## Testing
 
@@ -56,16 +90,5 @@ individual test scripts can be run with python directly.
 
 ### Testbench Files
 
-    tb/test_wb.py           : MyHDL testbench for master and RAM model
-    tb/test_wb_async_reg.py : MyHDL testbench for wb_async_reg module
-    tb/test_wb_async_reg.v  : Verilog toplevel file for wb_async_reg cosimulation
-    tb/test_wb_dp_ram.py    : MyHDL testbench for wb_dp_ram module
-    tb/test_wb_dp_ram.v     : Verilog toplevel file for wb_dp_ram cosimulation
-    tb/test_wb_mux_2.py     : MyHDL testbench for wb_mux_2 module
-    tb/test_wb_mux_2.v      : Verilog toplevel file for wb_mux_2 cosimulation
-    tb/test_wb_ram.py       : MyHDL testbench for wb_ram module
-    tb/test_wb_ram.v        : Verilog toplevel file for wb_ram cosimulation
-    tb/test_wb_ram_model.py : MyHDL testbench for RAM model
-    tb/test_wb_reg.py       : MyHDL testbench for wb_reg module
-    tb/test_wb_reg.v        : Verilog toplevel file for wb_reg cosimulation
+    tb/axis_ep.py           : MyHDL AXI Stream endpoints
     tb/wb.py                : MyHDL Wishbone master model and RAM model
