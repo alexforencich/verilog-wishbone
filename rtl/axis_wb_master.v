@@ -262,8 +262,14 @@ always @* begin
                     wb_sel_o_next = {WB_SELECT_WIDTH{1'b0}};
                     data_next = {WB_DATA_WIDTH{1'b0}};
                     if (wb_we_o_reg) begin
-                        output_axis_tlast_int = 1'b1;
-                        state_next = STATE_WRITE_1;
+                        if (input_axis_tlast) begin
+                            output_axis_tlast_int = 1'b1;
+                            output_axis_tuser_int = 1'b1;
+                            state_next = STATE_IDLE;
+                        end else begin
+                            output_axis_tlast_int = 1'b1;
+                            state_next = STATE_WRITE_1;
+                        end
                     end else begin
                         if (IMPLICIT_FRAMING) begin
                             input_axis_tready_next = 1'b0;
