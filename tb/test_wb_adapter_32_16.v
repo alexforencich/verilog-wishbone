@@ -68,29 +68,33 @@ wire wbs_cyc_o;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                wbm_adr_i,
-                wbm_dat_i,
-                wbm_we_i,
-                wbm_sel_i,
-                wbm_stb_i,
-                wbm_cyc_i,
-                wbs_dat_i,
-                wbs_ack_i,
-                wbs_err_i,
-                wbs_rty_i);
-    $to_myhdl(wbm_dat_o,
-              wbm_ack_o,
-              wbm_err_o,
-              wbm_rty_o,
-              wbs_adr_o,
-              wbs_dat_o,
-              wbs_we_o,
-              wbs_sel_o,
-              wbs_stb_o,
-              wbs_cyc_o);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        wbm_adr_i,
+        wbm_dat_i,
+        wbm_we_i,
+        wbm_sel_i,
+        wbm_stb_i,
+        wbm_cyc_i,
+        wbs_dat_i,
+        wbs_ack_i,
+        wbs_err_i,
+        wbs_rty_i
+    );
+    $to_myhdl(
+        wbm_dat_o,
+        wbm_ack_o,
+        wbm_err_o,
+        wbm_rty_o,
+        wbs_adr_o,
+        wbs_dat_o,
+        wbs_we_o,
+        wbs_sel_o,
+        wbs_stb_o,
+        wbs_cyc_o
+    );
 
     // dump file
     $dumpfile("test_wb_adapter_32_16.lxt");

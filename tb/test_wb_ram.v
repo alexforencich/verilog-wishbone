@@ -54,17 +54,21 @@ wire ack_o;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                adr_i,
-                dat_i,
-                we_i,
-                sel_i,
-                stb_i,
-                cyc_i);
-    $to_myhdl(dat_o,
-              ack_o);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        adr_i,
+        dat_i,
+        we_i,
+        sel_i,
+        stb_i,
+        cyc_i
+    );
+    $to_myhdl(
+        dat_o,
+        ack_o
+    );
 
     // dump file
     $dumpfile("test_wb_ram.lxt");

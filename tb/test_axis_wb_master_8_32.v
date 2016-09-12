@@ -76,31 +76,35 @@ wire busy;
 
 initial begin
     // myhdl integration
-    $from_myhdl(clk,
-                rst,
-                current_test,
-                input_axis_tdata,
-                input_axis_tkeep,
-                input_axis_tvalid,
-                input_axis_tlast,
-                input_axis_tuser,
-                output_axis_tready,
-                wb_dat_i,
-                wb_ack_i,
-                wb_err_i);
-    $to_myhdl(input_axis_tready,
-              output_axis_tdata,
-              output_axis_tkeep,
-              output_axis_tvalid,
-              output_axis_tlast,
-              output_axis_tuser,
-              wb_adr_o,
-              wb_dat_o,
-              wb_we_o,
-              wb_sel_o,
-              wb_stb_o,
-              wb_cyc_o,
-              busy);
+    $from_myhdl(
+        clk,
+        rst,
+        current_test,
+        input_axis_tdata,
+        input_axis_tkeep,
+        input_axis_tvalid,
+        input_axis_tlast,
+        input_axis_tuser,
+        output_axis_tready,
+        wb_dat_i,
+        wb_ack_i,
+        wb_err_i
+    );
+    $to_myhdl(
+        input_axis_tready,
+        output_axis_tdata,
+        output_axis_tkeep,
+        output_axis_tvalid,
+        output_axis_tlast,
+        output_axis_tuser,
+        wb_adr_o,
+        wb_dat_o,
+        wb_we_o,
+        wb_sel_o,
+        wb_stb_o,
+        wb_cyc_o,
+        busy
+    );
 
     // dump file
     $dumpfile("test_axis_wb_master_8_32.lxt");

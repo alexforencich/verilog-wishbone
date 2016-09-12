@@ -64,27 +64,31 @@ wire b_ack_o;
 
 initial begin
     // myhdl integration
-    $from_myhdl(a_clk,
-                a_rst,
-                b_clk,
-                b_rst,
-                current_test,
-                a_adr_i,
-                a_dat_i,
-                a_we_i,
-                a_sel_i,
-                a_stb_i,
-                a_cyc_i,
-                b_adr_i,
-                b_dat_i,
-                b_we_i,
-                b_sel_i,
-                b_stb_i,
-                b_cyc_i);
-    $to_myhdl(a_dat_o,
-              a_ack_o,
-              b_dat_o,
-              b_ack_o);
+    $from_myhdl(
+        a_clk,
+        a_rst,
+        b_clk,
+        b_rst,
+        current_test,
+        a_adr_i,
+        a_dat_i,
+        a_we_i,
+        a_sel_i,
+        a_stb_i,
+        a_cyc_i,
+        b_adr_i,
+        b_dat_i,
+        b_we_i,
+        b_sel_i,
+        b_stb_i,
+        b_cyc_i
+    );
+    $to_myhdl(
+        a_dat_o,
+        a_ack_o,
+        b_dat_o,
+        b_ack_o
+    );
 
     // dump file
     $dumpfile("test_wb_dp_ram.lxt");

@@ -49,18 +49,20 @@ def bench():
     # WB RAM model
     wb_ram_inst = wb.WBRam(2**16)
 
-    wb_ram_port0 = wb_ram_inst.create_port(clk,
-                                           adr_i=port0_adr_i,
-                                           dat_i=port0_dat_i,
-                                           dat_o=port0_dat_o,
-                                           we_i=port0_we_i,
-                                           sel_i=port0_sel_i,
-                                           stb_i=port0_stb_i,
-                                           ack_o=port0_ack_o,
-                                           cyc_i=port0_cyc_i,
-                                           latency=1,
-                                           async=False,
-                                           name='port0')
+    wb_ram_port0 = wb_ram_inst.create_port(
+        clk,
+        adr_i=port0_adr_i,
+        dat_i=port0_dat_i,
+        dat_o=port0_dat_o,
+        we_i=port0_we_i,
+        sel_i=port0_sel_i,
+        stb_i=port0_stb_i,
+        ack_o=port0_ack_o,
+        cyc_i=port0_cyc_i,
+        latency=1,
+        async=False,
+        name='port0'
+    )
 
     @always(delay(4))
     def clkgen():
@@ -163,7 +165,7 @@ def bench():
                 sel_end = ((2**(4)-1) >> (4 - (((offset + int(length/1) - 1) % 4) + 1)))
                 cycles = int((length + 4-1 + (offset % 4)) / 4)
                 i = 1
-                
+
                 port0_cyc_i.next = 1
 
                 port0_stb_i.next = 1

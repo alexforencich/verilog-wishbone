@@ -27,87 +27,20 @@ from myhdl import *
 import os
 import struct
 
-try:
-    from queue import Queue
-except ImportError:
-    from Queue import Queue
-
 import axis_ep
 import wb
 
 module = 'axis_wb_master'
+testbench = 'test_%s_8_32_16' % module
 
 srcs = []
 
 srcs.append("../rtl/%s.v" % module)
-srcs.append("test_%s_8_32_16.v" % module)
+srcs.append("%s.v" % testbench)
 
 src = ' '.join(srcs)
 
-build_cmd = "iverilog -o test_%s_8_32_16.vvp %s" % (module, src)
-
-def dut_axis_wb_master(clk,
-                       rst,
-                       current_test,
-
-                       input_axis_tdata,
-                       input_axis_tkeep,
-                       input_axis_tvalid,
-                       input_axis_tready,
-                       input_axis_tlast,
-                       input_axis_tuser,
-
-                       output_axis_tdata,
-                       output_axis_tkeep,
-                       output_axis_tvalid,
-                       output_axis_tready,
-                       output_axis_tlast,
-                       output_axis_tuser,
-
-                       wb_adr_o,
-                       wb_dat_i,
-                       wb_dat_o,
-                       wb_we_o,
-                       wb_sel_o,
-                       wb_stb_o,
-                       wb_ack_i,
-                       wb_err_i,
-                       wb_cyc_o,
-
-                       busy):
-
-    if os.system(build_cmd):
-        raise Exception("Error running build command")
-    return Cosimulation("vvp -m myhdl test_%s_8_32_16.vvp -lxt2" % module,
-                clk=clk,
-                rst=rst,
-                current_test=current_test,
-
-                input_axis_tdata=input_axis_tdata,
-                input_axis_tkeep=input_axis_tkeep,
-                input_axis_tvalid=input_axis_tvalid,
-                input_axis_tready=input_axis_tready,
-                input_axis_tlast=input_axis_tlast,
-                input_axis_tuser=input_axis_tuser,
-
-                output_axis_tdata=output_axis_tdata,
-                output_axis_tkeep=output_axis_tkeep,
-                output_axis_tvalid=output_axis_tvalid,
-                output_axis_tready=output_axis_tready,
-                output_axis_tlast=output_axis_tlast,
-                output_axis_tuser=output_axis_tuser,
-
-                wb_adr_o=wb_adr_o,
-                wb_dat_i=wb_dat_i,
-                wb_dat_o=wb_dat_o,
-                wb_we_o=wb_we_o,
-                wb_sel_o=wb_sel_o,
-                wb_stb_o=wb_stb_o,
-                wb_ack_i=wb_ack_i,
-                wb_err_i=wb_err_i,
-                wb_cyc_o=wb_cyc_o,
-
-                busy=busy)
+build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
 def bench():
 
@@ -155,77 +88,93 @@ def bench():
     busy = Signal(bool(0))
 
     # sources and sinks
-    source_queue = Queue()
     source_pause = Signal(bool(0))
-    sink_queue = Queue()
     sink_pause = Signal(bool(0))
 
-    source = axis_ep.AXIStreamSource(clk,
-                                     rst,
-                                     tdata=input_axis_tdata,
-                                     tkeep=input_axis_tkeep,
-                                     tvalid=input_axis_tvalid,
-                                     tready=input_axis_tready,
-                                     tlast=input_axis_tlast,
-                                     tuser=input_axis_tuser,
-                                     fifo=source_queue,
-                                     pause=source_pause,
-                                     name='source')
+    source = axis_ep.AXIStreamSource()
 
-    sink = axis_ep.AXIStreamSink(clk,
-                                 rst,
-                                 tdata=output_axis_tdata,
-                                 tkeep=output_axis_tkeep,
-                                 tvalid=output_axis_tvalid,
-                                 tready=output_axis_tready,
-                                 tlast=output_axis_tlast,
-                                 tuser=output_axis_tuser,
-                                 fifo=sink_queue,
-                                 pause=sink_pause,
-                                 name='sink')
+    source_logic = source.create_logic(
+        clk,
+        rst,
+        tdata=input_axis_tdata,
+        tkeep=input_axis_tkeep,
+        tvalid=input_axis_tvalid,
+        tready=input_axis_tready,
+        tlast=input_axis_tlast,
+        tuser=input_axis_tuser,
+        pause=source_pause,
+        name='source'
+    )
+
+    sink = axis_ep.AXIStreamSink()
+
+    sink_logic = sink.create_logic(
+        clk,
+        rst,
+        tdata=output_axis_tdata,
+        tkeep=output_axis_tkeep,
+        tvalid=output_axis_tvalid,
+        tready=output_axis_tready,
+        tlast=output_axis_tlast,
+        tuser=output_axis_tuser,
+        pause=sink_pause,
+        name='sink'
+    )
 
     # WB RAM model
     wb_ram_inst = wb.WBRam(2**16)
 
-    wb_ram_port0 = wb_ram_inst.create_port(clk,
-                                           adr_i=wb_adr_o,
-                                           dat_i=wb_dat_o,
-                                           dat_o=wb_dat_i,
-                                           we_i=wb_we_o,
-                                           sel_i=wb_sel_o,
-                                           stb_i=wb_stb_o,
-                                           ack_o=wb_ack_i,
-                                           cyc_i=wb_cyc_o,
-                                           latency=1,
-                                           async=False,
-                                           name='port0')
+    wb_ram_port0 = wb_ram_inst.create_port(
+        clk,
+        adr_i=wb_adr_o,
+        dat_i=wb_dat_o,
+        dat_o=wb_dat_i,
+        we_i=wb_we_o,
+        sel_i=wb_sel_o,
+        stb_i=wb_stb_o,
+        ack_o=wb_ack_i,
+        cyc_i=wb_cyc_o,
+        latency=1,
+        async=False,
+        name='port0'
+    )
 
     # DUT
-    dut = dut_axis_wb_master(clk,
-                             rst,
-                             current_test,
-                             input_axis_tdata,
-                             input_axis_tkeep,
-                             input_axis_tvalid,
-                             input_axis_tready,
-                             input_axis_tlast,
-                             input_axis_tuser,
-                             output_axis_tdata,
-                             output_axis_tkeep,
-                             output_axis_tvalid,
-                             output_axis_tready,
-                             output_axis_tlast,
-                             output_axis_tuser,
-                             wb_adr_o,
-                             wb_dat_i,
-                             wb_dat_o,
-                             wb_we_o,
-                             wb_sel_o,
-                             wb_stb_o,
-                             wb_ack_i,
-                             wb_err_i,
-                             wb_cyc_o,
-                             busy)
+    if os.system(build_cmd):
+        raise Exception("Error running build command")
+
+    dut = Cosimulation(
+        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        clk=clk,
+        rst=rst,
+        current_test=current_test,
+
+        input_axis_tdata=input_axis_tdata,
+        input_axis_tkeep=input_axis_tkeep,
+        input_axis_tvalid=input_axis_tvalid,
+        input_axis_tready=input_axis_tready,
+        input_axis_tlast=input_axis_tlast,
+        input_axis_tuser=input_axis_tuser,
+
+        output_axis_tdata=output_axis_tdata,
+        output_axis_tkeep=output_axis_tkeep,
+        output_axis_tvalid=output_axis_tvalid,
+        output_axis_tready=output_axis_tready,
+        output_axis_tlast=output_axis_tlast,
+        output_axis_tuser=output_axis_tuser,
+
+        wb_adr_o=wb_adr_o,
+        wb_dat_i=wb_dat_i,
+        wb_dat_o=wb_dat_o,
+        wb_we_o=wb_we_o,
+        wb_sel_o=wb_sel_o,
+        wb_stb_o=wb_stb_o,
+        wb_ack_i=wb_ack_i,
+        wb_err_i=wb_err_i,
+        wb_cyc_o=wb_cyc_o,
+
+        busy=busy
+    )
 
     @always(delay(4))
     def clkgen():
@@ -248,7 +197,7 @@ def bench():
         print("test 1: test write")
         current_test.next = 1
 
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 0, 4)+b'\x11\x22\x33\x44'))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 0, 4)+b'\x11\x22\x33\x44'))
         yield clk.posedge
 
         yield input_axis_tvalid.negedge
@@ -263,9 +212,7 @@ def bench():
 
         assert wb_ram_inst.read_mem(0, 4) == b'\x11\x22\x33\x44'
 
-        rx_data = b''
-        while not sink_queue.empty():
-            rx_data += bytearray(sink_queue.get())
+        rx_data = bytearray(sink.read())
         print(repr(rx_data))
         assert rx_data == b'\xA4'+struct.pack('>IH', 0, 4)
 
@@ -275,7 +222,7 @@ def bench():
         print("test 2: test read")
         current_test.next = 2
 
-        source_queue.put(bytearray(b'\xA1'+struct.pack('>IH', 0, 4)))
+        source.write(bytearray(b'\xA1'+struct.pack('>IH', 0, 4)))
         yield clk.posedge
 
         yield input_axis_tvalid.negedge
@@ -284,9 +231,7 @@ def bench():
 
         yield clk.posedge
 
-        rx_data = b''
-        while not sink_queue.empty():
-            rx_data += bytearray(sink_queue.get())
+        rx_data = bytearray(sink.read())
         print(repr(rx_data))
         assert rx_data == b'\xA3'+struct.pack('>IH', 0, 4)+b'\x11\x22\x33\x44'
 
@@ -298,7 +243,7 @@ def bench():
 
         for length in range(1,8):
             for offset in range(4):
-                source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 256*(16*offset+length)+offset, length)+b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]))
+                source.write(bytearray(b'\xA2'+struct.pack('>IH', 256*(16*offset+length)+offset, length)+b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]))
                 yield clk.posedge
 
                 yield input_axis_tvalid.negedge
@@ -313,9 +258,7 @@ def bench():
 
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset,length) == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
-                rx_data = b''
-                while not sink_queue.empty():
-                    rx_data += bytearray(sink_queue.get())
+                rx_data = bytearray(sink.read())
                 print(repr(rx_data))
                 assert rx_data == b'\xA4'+struct.pack('>IH', 256*(16*offset+length)+offset, length)
 
@@ -327,7 +270,7 @@ def bench():
 
         for length in range(1,8):
             for offset in range(4):
-                source_queue.put(bytearray(b'\xA1'+struct.pack('>IH', 256*(16*offset+length)+offset, length)))
+                source.write(bytearray(b'\xA1'+struct.pack('>IH', 256*(16*offset+length)+offset, length)))
                 yield clk.posedge
 
                 yield input_axis_tvalid.negedge
@@ -336,9 +279,7 @@ def bench():
 
                 yield clk.posedge
 
-                rx_data = b''
-                while not sink_queue.empty():
-                    rx_data += bytearray(sink_queue.get())
+                rx_data = bytearray(sink.read())
                 print(repr(rx_data))
                 assert rx_data == b'\xA3'+struct.pack('>IH', 256*(16*offset+length)+offset, length)+b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
@@ -348,10 +289,10 @@ def bench():
         print("test 5: test leading padding")
         current_test.next = 5
 
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 4, 2)+b'\xAA\xBB'))
-        source_queue.put(bytearray(b'\x00'*8+b'\xA2'+struct.pack('>IH', 6, 2)+b'\xCC\xDD'))
-        source_queue.put(bytearray(b'\x00'*8+b'\xA1'+struct.pack('>IH', 4, 2)))
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 8, 2)+b'\xEE\xFF'))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 4, 2)+b'\xAA\xBB'))
+        source.write(bytearray(b'\x00'*8+b'\xA2'+struct.pack('>IH', 6, 2)+b'\xCC\xDD'))
+        source.write(bytearray(b'\x00'*8+b'\xA1'+struct.pack('>IH', 4, 2)))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 8, 2)+b'\xEE\xFF'))
         yield clk.posedge
 
         yield input_axis_tvalid.negedge
@@ -366,9 +307,7 @@ def bench():
 
         assert wb_ram_inst.read_mem(4, 6) == b'\xAA\xBB\x00\x00\xEE\xFF'
 
-        rx_data = b''
-        while not sink_queue.empty():
-            rx_data += bytearray(sink_queue.get())
+        rx_data = bytearray(sink.read())
         print(repr(rx_data))
         assert rx_data == b'\xA4'+struct.pack('>IH', 4, 2)+b'\xA4'+struct.pack('>IH', 8, 2)
 
@@ -378,11 +317,11 @@ def bench():
         print("test 6: test trailing padding")
         current_test.next = 6
 
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 10, 2)+b'\xAA\xBB'))
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 12, 2)+b'\xCC\xDD'+b'\x00'*8))
-        source_queue.put(bytearray(b'\xA1'+struct.pack('>IH', 10, 2)+b'\x00'*8))
-        source_queue.put(bytearray(b'\xA1'+struct.pack('>IH', 10, 2)+b'\x00'*1))
-        source_queue.put(bytearray(b'\xA2'+struct.pack('>IH', 14, 2)+b'\xEE\xFF'))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 10, 2)+b'\xAA\xBB'))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 12, 2)+b'\xCC\xDD'+b'\x00'*8))
+        source.write(bytearray(b'\xA1'+struct.pack('>IH', 10, 2)+b'\x00'*8))
+        source.write(bytearray(b'\xA1'+struct.pack('>IH', 10, 2)+b'\x00'*1))
+        source.write(bytearray(b'\xA2'+struct.pack('>IH', 14, 2)+b'\xEE\xFF'))
         yield clk.posedge
 
         yield input_axis_tvalid.negedge
@@ -397,9 +336,7 @@ def bench():
 
         assert wb_ram_inst.read_mem(10, 6) == b'\xAA\xBB\xCC\xDD\xEE\xFF'
 
-        rx_data = b''
-        while not sink_queue.empty():
-            rx_data += bytearray(sink_queue.get())
+        rx_data = bytearray(sink.read())
         print(repr(rx_data))
         assert rx_data == b'\xA4'+struct.pack('>IH', 10, 2)+\
                             b'\xA4'+struct.pack('>IH', 12, 2)+\
@@ -411,7 +348,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, clkgen, source, sink, wb_ram_port0, check
+    return dut, clkgen, source_logic, sink_logic, wb_ram_port0, check
 
 def test_bench():
     sim = Simulation(bench())

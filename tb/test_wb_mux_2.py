@@ -29,94 +29,16 @@ import os
 import wb
 
 module = 'wb_mux_2'
+testbench = 'test_%s' % module
 
 srcs = []
 
 srcs.append("../rtl/%s.v" % module)
-srcs.append("test_%s.v" % module)
+srcs.append("%s.v" % testbench)
 
 src = ' '.join(srcs)
 
-build_cmd = "iverilog -o test_%s.vvp %s" % (module, src)
-
-def dut_wb_mux_2(clk,
-                 rst,
-                 current_test,
-                 wbm_adr_i,
-                 wbm_dat_i,
-                 wbm_dat_o,
-                 wbm_we_i,
-                 wbm_sel_i,
-                 wbm_stb_i,
-                 wbm_ack_o,
-                 wbm_err_o,
-                 wbm_rty_o,
-                 wbm_cyc_i,
-                 wbs0_adr_o,
-                 wbs0_dat_i,
-                 wbs0_dat_o,
-                 wbs0_we_o,
-                 wbs0_sel_o,
-                 wbs0_stb_o,
-                 wbs0_ack_i,
-                 wbs0_err_i,
-                 wbs0_rty_i,
-                 wbs0_cyc_o,
-                 wbs0_addr,
-                 wbs0_addr_msk,
-                 wbs1_adr_o,
-                 wbs1_dat_i,
-                 wbs1_dat_o,
-                 wbs1_we_o,
-                 wbs1_sel_o,
-                 wbs1_stb_o,
-                 wbs1_ack_i,
-                 wbs1_err_i,
-                 wbs1_rty_i,
-                 wbs1_cyc_o,
-                 wbs1_addr,
-                 wbs1_addr_msk):
-
-    if os.system(build_cmd):
-        raise Exception("Error running build command")
-    return Cosimulation("vvp -m myhdl test_%s.vvp -lxt2" % module,
-                clk=clk,
-                rst=rst,
-                current_test=current_test,
-                wbm_adr_i=wbm_adr_i,
-                wbm_dat_i=wbm_dat_i,
-                wbm_dat_o=wbm_dat_o,
-                wbm_we_i=wbm_we_i,
-                wbm_sel_i=wbm_sel_i,
-                wbm_stb_i=wbm_stb_i,
-                wbm_ack_o=wbm_ack_o,
-                wbm_err_o=wbm_err_o,
-                wbm_rty_o=wbm_rty_o,
-                wbm_cyc_i=wbm_cyc_i,
-                wbs0_adr_o=wbs0_adr_o,
-                wbs0_dat_i=wbs0_dat_i,
-                wbs0_dat_o=wbs0_dat_o,
-                wbs0_we_o=wbs0_we_o,
-                wbs0_sel_o=wbs0_sel_o,
-                wbs0_stb_o=wbs0_stb_o,
-                wbs0_ack_i=wbs0_ack_i,
-                wbs0_err_i=wbs0_err_i,
-                wbs0_rty_i=wbs0_rty_i,
-                wbs0_cyc_o=wbs0_cyc_o,
-                wbs0_addr=wbs0_addr,
-                wbs0_addr_msk=wbs0_addr_msk,
-                wbs1_adr_o=wbs1_adr_o,
-                wbs1_dat_i=wbs1_dat_i,
-                wbs1_dat_o=wbs1_dat_o,
-                wbs1_we_o=wbs1_we_o,
-                wbs1_sel_o=wbs1_sel_o,
-                wbs1_stb_o=wbs1_stb_o,
-                wbs1_ack_i=wbs1_ack_i,
-                wbs1_err_i=wbs1_err_i,
-                wbs1_rty_i=wbs1_rty_i,
-                wbs1_cyc_o=wbs1_cyc_o,
-                wbs1_addr=wbs1_addr,
-                wbs1_addr_msk=wbs1_addr_msk)
+build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
 def bench():
 
@@ -170,87 +92,99 @@ def bench():
     # WB master
     wbm_inst = wb.WBMaster()
 
-    wbm_logic = wbm_inst.create_logic(clk,
-                                      adr_o=wbm_adr_i,
-                                      dat_i=wbm_dat_o,
-                                      dat_o=wbm_dat_i,
-                                      we_o=wbm_we_i,
-                                      sel_o=wbm_sel_i,
-                                      stb_o=wbm_stb_i,
-                                      ack_i=wbm_ack_o,
-                                      cyc_o=wbm_cyc_i,
-                                      name='master')
+    wbm_logic = wbm_inst.create_logic(
+        clk,
+        adr_o=wbm_adr_i,
+        dat_i=wbm_dat_o,
+        dat_o=wbm_dat_i,
+        we_o=wbm_we_i,
+        sel_o=wbm_sel_i,
+        stb_o=wbm_stb_i,
+        ack_i=wbm_ack_o,
+        cyc_o=wbm_cyc_i,
+        name='master'
+    )
 
     # WB RAM model
     wb_ram0_inst = wb.WBRam(2**16)
 
-    wb_ram0_port0 = wb_ram0_inst.create_port(clk,
-                                           adr_i=wbs0_adr_o,
-                                           dat_i=wbs0_dat_o,
-                                           dat_o=wbs0_dat_i,
-                                           we_i=wbs0_we_o,
-                                           sel_i=wbs0_sel_o,
-                                           stb_i=wbs0_stb_o,
-                                           ack_o=wbs0_ack_i,
-                                           cyc_i=wbs0_cyc_o,
-                                           latency=1,
-                                           async=False,
-                                           name='slave0')
+    wb_ram0_port0 = wb_ram0_inst.create_port(
+        clk,
+        adr_i=wbs0_adr_o,
+        dat_i=wbs0_dat_o,
+        dat_o=wbs0_dat_i,
+        we_i=wbs0_we_o,
+        sel_i=wbs0_sel_o,
+        stb_i=wbs0_stb_o,
+        ack_o=wbs0_ack_i,
+        cyc_i=wbs0_cyc_o,
+        latency=1,
+        async=False,
+        name='slave0'
+    )
 
     # WB RAM model
     wb_ram1_inst = wb.WBRam(2**16)
 
-    wb_ram1_port0 = wb_ram1_inst.create_port(clk,
-                                           adr_i=wbs1_adr_o,
-                                           dat_i=wbs1_dat_o,
-                                           dat_o=wbs1_dat_i,
-                                           we_i=wbs1_we_o,
-                                           sel_i=wbs1_sel_o,
-                                           stb_i=wbs1_stb_o,
-                                           ack_o=wbs1_ack_i,
-                                           cyc_i=wbs1_cyc_o,
-                                           latency=1,
-                                           async=False,
-                                           name='slave1')
+    wb_ram1_port0 = wb_ram1_inst.create_port(
+        clk,
+        adr_i=wbs1_adr_o,
+        dat_i=wbs1_dat_o,
+        dat_o=wbs1_dat_i,
+        we_i=wbs1_we_o,
+        sel_i=wbs1_sel_o,
+        stb_i=wbs1_stb_o,
+        ack_o=wbs1_ack_i,
+        cyc_i=wbs1_cyc_o,
+        latency=1,
+        async=False,
+        name='slave1'
+    )
 
     # DUT
-    dut = dut_wb_mux_2(clk,
-                       rst,
-                       current_test,
-                       wbm_adr_i,
-                       wbm_dat_i,
-                       wbm_dat_o,
-                       wbm_we_i,
-                       wbm_sel_i,
-                       wbm_stb_i,
-                       wbm_ack_o,
-                       wbm_err_o,
-                       wbm_rty_o,
-                       wbm_cyc_i,
-                       wbs0_adr_o,
-                       wbs0_dat_i,
-                       wbs0_dat_o,
-                       wbs0_we_o,
-                       wbs0_sel_o,
-                       wbs0_stb_o,
-                       wbs0_ack_i,
-                       wbs0_err_i,
-                       wbs0_rty_i,
-                       wbs0_cyc_o,
-                       wbs0_addr,
-                       wbs0_addr_msk,
-                       wbs1_adr_o,
-                       wbs1_dat_i,
-                       wbs1_dat_o,
-                       wbs1_we_o,
-                       wbs1_sel_o,
-                       wbs1_stb_o,
-                       wbs1_ack_i,
-                       wbs1_err_i,
-                       wbs1_rty_i,
-                       wbs1_cyc_o,
-                       wbs1_addr,
-                       wbs1_addr_msk)
+    if os.system(build_cmd):
+        raise Exception("Error running build command")
+
+    dut = Cosimulation(
+        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        clk=clk,
+        rst=rst,
+        current_test=current_test,
+        wbm_adr_i=wbm_adr_i,
+        wbm_dat_i=wbm_dat_i,
+        wbm_dat_o=wbm_dat_o,
+        wbm_we_i=wbm_we_i,
+        wbm_sel_i=wbm_sel_i,
+        wbm_stb_i=wbm_stb_i,
+        wbm_ack_o=wbm_ack_o,
+        wbm_err_o=wbm_err_o,
+        wbm_rty_o=wbm_rty_o,
+        wbm_cyc_i=wbm_cyc_i,
+        wbs0_adr_o=wbs0_adr_o,
+        wbs0_dat_i=wbs0_dat_i,
+        wbs0_dat_o=wbs0_dat_o,
+        wbs0_we_o=wbs0_we_o,
+        wbs0_sel_o=wbs0_sel_o,
+        wbs0_stb_o=wbs0_stb_o,
+        wbs0_ack_i=wbs0_ack_i,
+        wbs0_err_i=wbs0_err_i,
+        wbs0_rty_i=wbs0_rty_i,
+        wbs0_cyc_o=wbs0_cyc_o,
+        wbs0_addr=wbs0_addr,
+        wbs0_addr_msk=wbs0_addr_msk,
+        wbs1_adr_o=wbs1_adr_o,
+        wbs1_dat_i=wbs1_dat_i,
+        wbs1_dat_o=wbs1_dat_o,
+        wbs1_we_o=wbs1_we_o,
+        wbs1_sel_o=wbs1_sel_o,
+        wbs1_stb_o=wbs1_stb_o,
+        wbs1_ack_i=wbs1_ack_i,
+        wbs1_err_i=wbs1_err_i,
+        wbs1_rty_i=wbs1_rty_i,
+        wbs1_cyc_o=wbs1_cyc_o,
+        wbs1_addr=wbs1_addr,
+        wbs1_addr_msk=wbs1_addr_msk
+    )
 
     @always(delay(4))
     def clkgen():

@@ -49,32 +49,36 @@ def bench():
     # WB master
     wb_master_inst = wb.WBMaster()
 
-    wb_master_logic = wb_master_inst.create_logic(clk,
-                                                  adr_o=port0_adr_i,
-                                                  dat_i=port0_dat_o,
-                                                  dat_o=port0_dat_i,
-                                                  we_o=port0_we_i,
-                                                  sel_o=port0_sel_i,
-                                                  stb_o=port0_stb_i,
-                                                  ack_i=port0_ack_o,
-                                                  cyc_o=port0_cyc_i,
-                                                  name='master')
+    wb_master_logic = wb_master_inst.create_logic(
+        clk,
+        adr_o=port0_adr_i,
+        dat_i=port0_dat_o,
+        dat_o=port0_dat_i,
+        we_o=port0_we_i,
+        sel_o=port0_sel_i,
+        stb_o=port0_stb_i,
+        ack_i=port0_ack_o,
+        cyc_o=port0_cyc_i,
+        name='master'
+    )
 
     # WB RAM model
     wb_ram_inst = wb.WBRam(2**16)
 
-    wb_ram_port0 = wb_ram_inst.create_port(clk,
-                                           adr_i=port0_adr_i,
-                                           dat_i=port0_dat_i,
-                                           dat_o=port0_dat_o,
-                                           we_i=port0_we_i,
-                                           sel_i=port0_sel_i,
-                                           stb_i=port0_stb_i,
-                                           ack_o=port0_ack_o,
-                                           cyc_i=port0_cyc_i,
-                                           latency=1,
-                                           async=False,
-                                           name='port0')
+    wb_ram_port0 = wb_ram_inst.create_port(
+        clk,
+        adr_i=port0_adr_i,
+        dat_i=port0_dat_i,
+        dat_o=port0_dat_o,
+        we_i=port0_we_i,
+        sel_i=port0_sel_i,
+        stb_i=port0_stb_i,
+        ack_o=port0_ack_o,
+        cyc_i=port0_cyc_i,
+        latency=1,
+        async=False,
+        name='port0'
+    )
 
     @always(delay(4))
     def clkgen():

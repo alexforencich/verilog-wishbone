@@ -29,62 +29,16 @@ import os
 import wb
 
 module = 'wb_dp_ram'
+testbench = 'test_%s' % module
 
 srcs = []
 
 srcs.append("../rtl/%s.v" % module)
-srcs.append("test_%s.v" % module)
+srcs.append("%s.v" % testbench)
 
 src = ' '.join(srcs)
 
-build_cmd = "iverilog -o test_%s.vvp %s" % (module, src)
-
-def dut_wb_dp_ram(a_clk,
-                  a_rst,
-                  b_clk,
-                  b_rst,
-                  current_test,
-                  a_adr_i,
-                  a_dat_i,
-                  a_dat_o,
-                  a_we_i,
-                  a_sel_i,
-                  a_stb_i,
-                  a_ack_o,
-                  a_cyc_i,
-                  b_adr_i,
-                  b_dat_i,
-                  b_dat_o,
-                  b_we_i,
-                  b_sel_i,
-                  b_stb_i,
-                  b_ack_o,
-                  b_cyc_i):
-
-    if os.system(build_cmd):
-        raise Exception("Error running build command")
-    return Cosimulation("vvp -m myhdl test_%s.vvp -lxt2" % module,
-                a_clk=a_clk,
-                a_rst=a_rst,
-                b_clk=b_clk,
-                b_rst=b_rst,
-                current_test=current_test,
-                a_adr_i=a_adr_i,
-                a_dat_i=a_dat_i,
-                a_dat_o=a_dat_o,
-                a_we_i=a_we_i,
-                a_sel_i=a_sel_i,
-                a_stb_i=a_stb_i,
-                a_ack_o=a_ack_o,
-                a_cyc_i=a_cyc_i,
-                b_adr_i=b_adr_i,
-                b_dat_i=b_dat_i,
-                b_dat_o=b_dat_o,
-                b_we_i=b_we_i,
-                b_sel_i=b_sel_i,
-                b_stb_i=b_stb_i,
-                b_ack_o=b_ack_o,
-                b_cyc_i=b_cyc_i)
+build_cmd = "iverilog -o %s.vvp %s" % (testbench, src)
 
 def bench():
 
@@ -122,53 +76,63 @@ def bench():
     # WB master A
     wbm_inst_a = wb.WBMaster()
 
-    wbm_logic_a = wbm_inst_a.create_logic(a_clk,
-                                      adr_o=a_adr_i,
-                                      dat_i=a_dat_o,
-                                      dat_o=a_dat_i,
-                                      we_o=a_we_i,
-                                      sel_o=a_sel_i,
-                                      stb_o=a_stb_i,
-                                      ack_i=a_ack_o,
-                                      cyc_o=a_cyc_i,
-                                      name='master_a')
+    wbm_logic_a = wbm_inst_a.create_logic(
+        a_clk,
+        adr_o=a_adr_i,
+        dat_i=a_dat_o,
+        dat_o=a_dat_i,
+        we_o=a_we_i,
+        sel_o=a_sel_i,
+        stb_o=a_stb_i,
+        ack_i=a_ack_o,
+        cyc_o=a_cyc_i,
+        name='master_a'
+    )
 
     # WB master B
     wbm_inst_b = wb.WBMaster()
 
-    wbm_logic_b = wbm_inst_b.create_logic(b_clk,
-                                      adr_o=b_adr_i,
-                                      dat_i=b_dat_o,
-                                      dat_o=b_dat_i,
-                                      we_o=b_we_i,
-                                      sel_o=b_sel_i,
-                                      stb_o=b_stb_i,
-                                      ack_i=b_ack_o,
-                                      cyc_o=b_cyc_i,
-                                      name='master_')
+    wbm_logic_b = wbm_inst_b.create_logic(
+        b_clk,
+        adr_o=b_adr_i,
+        dat_i=b_dat_o,
+        dat_o=b_dat_i,
+        we_o=b_we_i,
+        sel_o=b_sel_i,
+        stb_o=b_stb_i,
+        ack_i=b_ack_o,
+        cyc_o=b_cyc_i,
+        name='master_'
+    )
 
     # DUT
-    dut = dut_wb_dp_ram(a_clk,
-                        a_rst,
-                        b_clk,
-                        b_rst,
-                        current_test,
-                        a_adr_i,
-                        a_dat_i,
-                        a_dat_o,
-                        a_we_i,
-                        a_sel_i,
-                        a_stb_i,
-                        a_ack_o,
-                        a_cyc_i,
-                        b_adr_i,
-                        b_dat_i,
-                        b_dat_o,
-                        b_we_i,
-                        b_sel_i,
-                        b_stb_i,
-                        b_ack_o,
-                        b_cyc_i)
+    if os.system(build_cmd):
+        raise Exception("Error running build command")
+
+    dut = Cosimulation(
+        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        a_clk=a_clk,
+        a_rst=a_rst,
+        b_clk=b_clk,
+        b_rst=b_rst,
+        current_test=current_test,
+        a_adr_i=a_adr_i,
+        a_dat_i=a_dat_i,
+        a_dat_o=a_dat_o,
+        a_we_i=a_we_i,
+        a_sel_i=a_sel_i,
+        a_stb_i=a_stb_i,
+        a_ack_o=a_ack_o,
+        a_cyc_i=a_cyc_i,
+        b_adr_i=b_adr_i,
+        b_dat_i=b_dat_i,
+        b_dat_o=b_dat_o,
+        b_we_i=b_we_i,
+        b_sel_i=b_sel_i,
+        b_stb_i=b_stb_i,
+        b_ack_o=b_ack_o,
+        b_cyc_i=b_cyc_i
+    )
 
     @always(delay(4))
     def a_clkgen():
@@ -206,7 +170,7 @@ def bench():
 
         yield wbm_inst_a.wait()
         yield a_clk.posedge
-        
+
         data = wbm_inst_a.get_read_data()
         assert data[0] == 4
         assert data[1] == b'\x11\x22\x33\x44'
@@ -226,7 +190,7 @@ def bench():
 
         yield wbm_inst_b.wait()
         yield b_clk.posedge
-        
+
         data = wbm_inst_b.get_read_data()
         assert data[0] == 4
         assert data[1] == b'\x11\x22\x33\x44'
