@@ -289,6 +289,7 @@ always @* begin
                         end
                         wb_cyc_o_next = 1'b1;
                         wb_stb_o_next = 1'b1;
+                        wb_sel_o_next = {WB_SELECT_WIDTH{1'b1}};
                         state_next = STATE_READ_1;
                     end
                 end else begin
@@ -361,6 +362,7 @@ always @* begin
                     count_next = 0;
                     wb_cyc_o_next = 1'b1;
                     wb_stb_o_next = 1'b1;
+                    wb_sel_o_next = {WB_SELECT_WIDTH{1'b1}};
                     state_next = STATE_READ_1;
                 end else begin
                     state_next = STATE_READ_2;
