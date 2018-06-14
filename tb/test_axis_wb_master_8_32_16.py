@@ -241,7 +241,7 @@ def bench():
         print("test 3: various writes")
         current_test.next = 3
 
-        for length in range(1,8):
+        for length in range(1,9):
             for offset in range(4):
                 source.write(bytearray(b'\xA2'+struct.pack('>IH', 256*(16*offset+length)+offset, length)+b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]))
                 yield clk.posedge
@@ -268,7 +268,7 @@ def bench():
         print("test 4: various reads")
         current_test.next = 4
 
-        for length in range(1,8):
+        for length in range(1,9):
             for offset in range(4):
                 source.write(bytearray(b'\xA1'+struct.pack('>IH', 256*(16*offset+length)+offset, length)))
                 yield clk.posedge
