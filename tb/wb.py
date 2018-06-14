@@ -309,7 +309,7 @@ class WBMaster(object):
 
                         self.read_data_queue.append((addr, data))
 
-        return logic
+        return instances()
 
 
 class WBRam(object):
@@ -437,5 +437,5 @@ class WBRam(object):
                         if name is not None:
                             print("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
 
-        return logic
+        return instances()
 
