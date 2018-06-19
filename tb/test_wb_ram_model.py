@@ -246,7 +246,7 @@ def bench():
 
         raise StopSimulation
 
-    return wb_ram_port0, clkgen, check
+    return instances()
 
 def test_bench():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
