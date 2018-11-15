@@ -60,7 +60,7 @@ def bench():
         ack_o=port0_ack_o,
         cyc_i=port0_cyc_i,
         latency=1,
-        async=False,
+        asynchronous=False,
         name='port0'
     )
 

@@ -371,7 +371,7 @@ class WBRam(object):
                 ack_o=Signal(bool(0)),
                 cyc_i=Signal(bool(0)),
                 latency=1,
-                async=False,
+                asynchronous=False,
                 name=None
             ):
 
@@ -394,7 +394,7 @@ class WBRam(object):
         @instance
         def logic():
             while True:
-                if async:
+                if asynchronous:
                     yield adr_i, cyc_i, stb_i
                 else:
                     yield clk.posedge
@@ -405,7 +405,7 @@ class WBRam(object):
                 addr = int(int(adr_i)/ww)*ww
 
                 if cyc_i & stb_i & ~ack_o:
-                    if async:
+                    if asynchronous:
                         yield delay(latency)
                     else:
                         for i in range(latency):

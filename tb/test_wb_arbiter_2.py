@@ -135,7 +135,7 @@ def bench():
         ack_o=wbs_ack_i,
         cyc_i=wbs_cyc_o,
         latency=1,
-        async=False,
+        asynchronous=False,
         name='slave'
     )
 

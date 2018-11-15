@@ -135,7 +135,7 @@ def bench():
         ack_o=wb_ack_i,
         cyc_i=wb_cyc_o,
         latency=1,
-        async=False,
+        asynchronous=False,
         name='port0'
     )
 

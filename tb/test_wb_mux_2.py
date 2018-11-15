@@ -119,7 +119,7 @@ def bench():
         ack_o=wbs0_ack_i,
         cyc_i=wbs0_cyc_o,
         latency=1,
-        async=False,
+        asynchronous=False,
         name='slave0'
     )
 
@@ -137,7 +137,7 @@ def bench():
         ack_o=wbs1_ack_i,
         cyc_i=wbs1_cyc_o,
         latency=1,
-        async=False,
+        asynchronous=False,
         name='slave1'
     )
 
