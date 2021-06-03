@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 
-Copyright (c) 2014-2016 Alex Forencich
+Copyright (c) 2014-2018 Alex Forencich
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,8 +43,10 @@ def bench():
 
     # Parameters
     PORTS = 32
-    TYPE = "PRIORITY"
-    BLOCK = "REQUEST"
+    ARB_TYPE_ROUND_ROBIN = 0
+    ARB_BLOCK = 1
+    ARB_BLOCK_ACK = 0
+    ARB_LSB_HIGH_PRIORITY = 0
 
     # Inputs
     clk = Signal(bool(0))

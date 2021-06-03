@@ -35,8 +35,8 @@ module test_wb_arbiter_2;
 parameter DATA_WIDTH = 32;
 parameter ADDR_WIDTH = 32;
 parameter SELECT_WIDTH = (DATA_WIDTH/8);
-parameter ARB_TYPE = "PRIORITY";
-parameter LSB_PRIORITY = "HIGH";
+parameter ARB_TYPE_ROUND_ROBIN = 0;
+parameter ARB_LSB_HIGH_PRIORITY = 1;
 
 // Inputs
 reg clk = 0;
@@ -125,8 +125,8 @@ wb_arbiter_2 #(
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH),
     .SELECT_WIDTH(SELECT_WIDTH),
-    .ARB_TYPE(ARB_TYPE),
-    .LSB_PRIORITY(LSB_PRIORITY)
+    .ARB_TYPE_ROUND_ROBIN(ARB_TYPE_ROUND_ROBIN),
+    .ARB_LSB_HIGH_PRIORITY(ARB_LSB_HIGH_PRIORITY)
 )
 UUT (
     .clk(clk),

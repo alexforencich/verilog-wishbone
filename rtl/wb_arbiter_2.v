@@ -34,8 +34,8 @@ module wb_arbiter_2 #
     parameter DATA_WIDTH = 32,                    // width of data bus in bits (8, 16, 32, or 64)
     parameter ADDR_WIDTH = 32,                    // width of address bus in bits
     parameter SELECT_WIDTH = (DATA_WIDTH/8),      // width of word select bus (1, 2, 4, or 8)
-    parameter ARB_TYPE = "PRIORITY",              // arbitration type: "PRIORITY" or "ROUND_ROBIN"
-    parameter LSB_PRIORITY = "HIGH"               // LSB priority: "LOW", "HIGH"
+    parameter ARB_TYPE_ROUND_ROBIN = 0,           // select round robin arbitration
+    parameter ARB_LSB_HIGH_PRIORITY = 1           // LSB priority selection
 )
 (
     input  wire                    clk,
@@ -133,9 +133,10 @@ assign wbs_cyc_o = wbm0_sel ? 1'b1 :
 // arbiter instance
 arbiter #(
     .PORTS(2),
-    .TYPE(ARB_TYPE),
-    .BLOCK("REQUEST"),
-    .LSB_PRIORITY(LSB_PRIORITY)
+    .ARB_TYPE_ROUND_ROBIN(ARB_TYPE_ROUND_ROBIN),
+    .ARB_BLOCK(1),
+    .ARB_BLOCK_ACK(0),
+    .ARB_LSB_HIGH_PRIORITY(ARB_LSB_HIGH_PRIORITY)
 )
 arb_inst (
     .clk(clk),

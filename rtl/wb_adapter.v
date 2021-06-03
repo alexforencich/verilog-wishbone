@@ -145,7 +145,7 @@ assign wbs_cyc_o = wbs_cyc_o_reg;
 
 priority_encoder #(
     .WIDTH(CYCLE_COUNT),
-    .LSB_PRIORITY("HIGH")
+    .LSB_HIGH_PRIORITY(1)
 )
 cycle_encoder_inst (
     .input_unencoded(cycle_sel_raw & cycle_mask_reg),

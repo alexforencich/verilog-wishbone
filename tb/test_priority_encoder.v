@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2014-2016 Alex Forencich
+Copyright (c) 2014-2018 Alex Forencich
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ module test_priority_encoder;
 
 // Parameters
 localparam WIDTH = 32;
+localparam LSB_HIGH_PRIORITY = 0;
 
 // Inputs
 reg clk = 0;
@@ -66,7 +67,8 @@ initial begin
 end
 
 priority_encoder #(
-    .WIDTH(WIDTH)
+    .WIDTH(WIDTH),
+    .LSB_HIGH_PRIORITY(LSB_HIGH_PRIORITY)
 )
 UUT (
     .input_unencoded(input_unencoded),
