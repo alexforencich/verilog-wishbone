@@ -3,7 +3,7 @@
 Generates a Wishbone arbiter with the specified number of ports
 """
 
-from __future__ import print_function
+
 
 import argparse
 import math
@@ -38,7 +38,7 @@ def generate(ports=2, name=None, output=None):
 
     select_width = int(math.ceil(math.log(ports, 2)))
 
-    t = Template(u"""/*
+    t = Template("""/*
 
 Copyright (c) 2015-2016 Alex Forencich
 
@@ -174,7 +174,7 @@ endmodule
         n=ports,
         w=select_width,
         name=name,
-        ports=range(ports)
+        ports=list(range(ports))
     ))
     
     print("Done")

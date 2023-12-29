@@ -352,7 +352,7 @@ class AXIStreamSource(object):
                             frame.WL = WL
                             data, keep, id, dest, user = frame.build()
                             if name is not None:
-                                print("[%s] Sending frame %s" % (name, repr(frame)))
+                                print(("[%s] Sending frame %s" % (name, repr(frame))))
                             if B > 0:
                                 l = data.pop(0)
                                 for i in range(B):
@@ -499,7 +499,7 @@ class AXIStreamSink(object):
                             frame.parse(data, keep, id, dest, user)
                             self.queue.append(frame)
                             if name is not None:
-                                print("[%s] Got frame %s" % (name, repr(frame)))
+                                print(("[%s] Got frame %s" % (name, repr(frame))))
                             frame = AXIStreamFrame()
                             data = []
                             keep = []

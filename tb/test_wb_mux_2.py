@@ -218,7 +218,7 @@ def bench():
 
         data = wb_ram0_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram0_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
 
@@ -250,7 +250,7 @@ def bench():
 
         data = wb_ram1_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram1_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
 

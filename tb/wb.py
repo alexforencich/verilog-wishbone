@@ -67,7 +67,7 @@ class WBMaster(object):
         self.init_write_words(address, data, 8)
 
     def idle(self):
-        return len(self.command_queue) == 0 and not self.cyc_o.next
+        return len(self.command_queue) == 0 and not self.cyc_o.__next__
 
     def wait(self):
         while not self.idle():
@@ -161,7 +161,7 @@ class WBMaster(object):
                         i = 0
 
                         if name is not None:
-                            print("[%s] Write data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print(("[%s] Write data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data))))))
 
                         cyc_o.next = 1
 
@@ -305,7 +305,7 @@ class WBMaster(object):
                         cyc_o.next = 0
 
                         if name is not None:
-                            print("[%s] Read data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print(("[%s] Read data a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data))))))
 
                         self.read_data_queue.append((addr, data))
 
@@ -426,7 +426,7 @@ class WBRam(object):
                             else:
                                 self.mem.seek(ws, 1)
                         if name is not None:
-                            print("[%s] Write word a:0x%08x sel:0x%02x d:%s" % (name, addr, sel_i, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print(("[%s] Write word a:0x%08x sel:0x%02x d:%s" % (name, addr, sel_i, " ".join(("{:02x}".format(c) for c in bytearray(data))))))
                     else:
                         data = bytearray(self.mem.read(bw))
                         val = 0
@@ -435,7 +435,7 @@ class WBRam(object):
                             val += data[i]
                         dat_o.next = val
                         if name is not None:
-                            print("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data)))))
+                            print(("[%s] Read word a:0x%08x d:%s" % (name, addr, " ".join(("{:02x}".format(c) for c in bytearray(data))))))
 
         return instances()
 
