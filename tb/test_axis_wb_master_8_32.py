@@ -144,7 +144,7 @@ def bench():
         raise Exception("Error running build command")
 
     dut = Cosimulation(
-        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        "vvp -m ./myhdl.vpi %s.vvp -lxt2" % testbench,
         clk=clk,
         rst=rst,
         current_test=current_test,
@@ -208,12 +208,12 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(0, 4) == b'\x11\x22\x33\x44'
 
         rx_data = bytearray(sink.read())
-        print(repr(rx_data))
+        print((repr(rx_data)))
         assert rx_data == b'\xA4'+struct.pack('>IH', 0, 4)
 
         yield delay(100)
@@ -232,7 +232,7 @@ def bench():
         yield clk.posedge
 
         rx_data = bytearray(sink.read())
-        print(repr(rx_data))
+        print((repr(rx_data)))
         assert rx_data == b'\xA3'+struct.pack('>IH', 0, 4)+b'\x11\x22\x33\x44'
 
         yield delay(100)
@@ -255,14 +255,14 @@ def bench():
 
                 data = wb_ram_inst.read_mem(256*(16*offset+length), 32)
                 for i in range(0, len(data), 16):
-                    print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+                    print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset, length) == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset-1, 1) == b'\xAA'
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset+length, 1) == b'\xAA'
 
                 rx_data = bytearray(sink.read())
-                print(repr(rx_data))
+                print((repr(rx_data)))
                 assert rx_data == b'\xA4'+struct.pack('>IH', 256*(16*offset+length)+offset, length)
 
         yield delay(100)
@@ -283,7 +283,7 @@ def bench():
                 yield clk.posedge
 
                 rx_data = bytearray(sink.read())
-                print(repr(rx_data))
+                print((repr(rx_data)))
                 assert rx_data == b'\xA3'+struct.pack('>IH', 256*(16*offset+length)+offset, length)+b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
 
         yield delay(100)
@@ -306,12 +306,12 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(4, 3) == b'\xAA\x00\xCC'
 
         rx_data = bytearray(sink.read())
-        print(repr(rx_data))
+        print((repr(rx_data)))
         assert rx_data == b'\xA4'+struct.pack('>IH', 4, 1)+b'\xA4'+struct.pack('>IH', 6, 1)
 
         yield delay(100)
@@ -335,12 +335,12 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(7, 3) == b'\xAA\xBB\xCC'
 
         rx_data = bytearray(sink.read())
-        print(repr(rx_data))
+        print((repr(rx_data)))
         assert rx_data == b'\xA4'+struct.pack('>IH', 7, 1)+\
                             b'\xA4'+struct.pack('>IH', 8, 1)+\
                             b'\xA3'+struct.pack('>IH', 7, 1)+b'\xAA'+\

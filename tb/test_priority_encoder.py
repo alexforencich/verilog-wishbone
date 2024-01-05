@@ -61,7 +61,7 @@ def bench():
         raise Exception("Error running build command")
 
     dut = Cosimulation(
-        "vvp -m myhdl %s.vvp -lxt2" % testbench,
+        "vvp -m ./myhdl.vpi %s.vvp -lxt2" % testbench,
         clk=clk,
         rst=rst,
         current_test=current_test,

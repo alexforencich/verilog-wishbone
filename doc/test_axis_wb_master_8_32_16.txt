@@ -1,0 +1,423 @@
+Running test...
+test 1: test write
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\x00\x00\x04\x11"3D'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\x00\x00\x04'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00000000 sel:0x03 d:11 22 33 44
+11 22 33 44 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+bytearray(b'\xa4\x00\x00\x00\x00\x00\x04')
+test 2: test read
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00\x00\x00\x00\x04'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00000000 d:11 22 33 44
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00\x00\x00\x00\x04\x11"3D'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00\x00\x00\x00\x04\x11"3D')
+test 3: various writes
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00A\x04\x00\x01\x11'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00A\x04\x00\x01'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002082 sel:0x01 d:11 00 00 00
+aa aa aa aa 11 00 aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00A\x04\x00\x01')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00Q\x05\x00\x01\x11'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00Q\x05\x00\x01'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002882 sel:0x01 d:00 11 00 00
+aa aa aa aa 00 11 aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00Q\x05\x00\x01')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00a\x06\x00\x01\x11'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00a\x06\x00\x01'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003082 sel:0x02 d:00 00 11 00
+aa aa aa aa aa aa 11 00 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00a\x06\x00\x01')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00q\x07\x00\x01\x11'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00q\x07\x00\x01'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003882 sel:0x02 d:00 00 00 11
+aa aa aa aa aa aa 00 11 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00q\x07\x00\x01')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00B\x04\x00\x02\x11"'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00B\x04\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002102 sel:0x01 d:11 22 00 00
+aa aa aa aa 11 22 aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00B\x04\x00\x02')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00R\x05\x00\x02\x11"'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00R\x05\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002902 sel:0x03 d:00 11 22 00
+aa aa aa aa 00 11 22 00 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00R\x05\x00\x02')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00b\x06\x00\x02\x11"'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00b\x06\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003102 sel:0x02 d:00 00 11 22
+aa aa aa aa aa aa 11 22 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00b\x06\x00\x02')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00r\x07\x00\x02\x11"'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00r\x07\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003902 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003904 sel:0x01 d:22 00 00 00
+aa aa aa aa aa aa 00 11 22 00 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00r\x07\x00\x02')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00C\x04\x00\x03\x11"3'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00C\x04\x00\x03'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002182 sel:0x03 d:11 22 33 00
+aa aa aa aa 11 22 33 00 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00C\x04\x00\x03')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00S\x05\x00\x03\x11"3'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00S\x05\x00\x03'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002982 sel:0x03 d:00 11 22 33
+aa aa aa aa 00 11 22 33 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00S\x05\x00\x03')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00c\x06\x00\x03\x11"3'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00c\x06\x00\x03'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003182 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003184 sel:0x01 d:33 00 00 00
+aa aa aa aa aa aa 11 22 33 00 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00c\x06\x00\x03')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00s\x07\x00\x03\x11"3'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00s\x07\x00\x03'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003982 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003984 sel:0x01 d:22 33 00 00
+aa aa aa aa aa aa 00 11 22 33 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00s\x07\x00\x03')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00D\x04\x00\x04\x11"3D'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00D\x04\x00\x04'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002202 sel:0x03 d:11 22 33 44
+aa aa aa aa 11 22 33 44 aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00D\x04\x00\x04')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00T\x05\x00\x04\x11"3D'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00T\x05\x00\x04'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002a02 sel:0x03 d:00 11 22 33
+[port0] Write word a:0x00002a04 sel:0x01 d:44 00 00 00
+aa aa aa aa 00 11 22 33 44 00 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00T\x05\x00\x04')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00d\x06\x00\x04\x11"3D'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00d\x06\x00\x04'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003202 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003204 sel:0x01 d:33 44 00 00
+aa aa aa aa aa aa 11 22 33 44 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00d\x06\x00\x04')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00t\x07\x00\x04\x11"3D'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00t\x07\x00\x04'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003a02 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003a04 sel:0x03 d:22 33 44 00
+aa aa aa aa aa aa 00 11 22 33 44 00 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00t\x07\x00\x04')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00E\x04\x00\x05\x11"3DU'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00E\x04\x00\x05'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002282 sel:0x03 d:11 22 33 44
+[port0] Write word a:0x00002284 sel:0x01 d:55 00 00 00
+aa aa aa aa 11 22 33 44 55 00 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00E\x04\x00\x05')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00U\x05\x00\x05\x11"3DU'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00U\x05\x00\x05'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002a82 sel:0x03 d:00 11 22 33
+[port0] Write word a:0x00002a84 sel:0x01 d:44 55 00 00
+aa aa aa aa 00 11 22 33 44 55 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00U\x05\x00\x05')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00e\x06\x00\x05\x11"3DU'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00e\x06\x00\x05'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003282 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003284 sel:0x03 d:33 44 55 00
+aa aa aa aa aa aa 11 22 33 44 55 00 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00e\x06\x00\x05')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00u\x07\x00\x05\x11"3DU'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00u\x07\x00\x05'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003a82 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003a84 sel:0x03 d:22 33 44 55
+aa aa aa aa aa aa 00 11 22 33 44 55 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00u\x07\x00\x05')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00F\x04\x00\x06\x11"3DUf'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00F\x04\x00\x06'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002302 sel:0x03 d:11 22 33 44
+[port0] Write word a:0x00002304 sel:0x01 d:55 66 00 00
+aa aa aa aa 11 22 33 44 55 66 aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00F\x04\x00\x06')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00V\x05\x00\x06\x11"3DUf'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00V\x05\x00\x06'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002b02 sel:0x03 d:00 11 22 33
+[port0] Write word a:0x00002b04 sel:0x03 d:44 55 66 00
+aa aa aa aa 00 11 22 33 44 55 66 00 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00V\x05\x00\x06')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00f\x06\x00\x06\x11"3DUf'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00f\x06\x00\x06'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003302 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003304 sel:0x03 d:33 44 55 66
+aa aa aa aa aa aa 11 22 33 44 55 66 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00f\x06\x00\x06')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00v\x07\x00\x06\x11"3DUf'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00v\x07\x00\x06'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003b02 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003b04 sel:0x03 d:22 33 44 55
+[port0] Write word a:0x00003b06 sel:0x01 d:66 00 00 00
+aa aa aa aa aa aa 00 11 22 33 44 55 66 00 aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00v\x07\x00\x06')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00G\x04\x00\x07\x11"3DUfw'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00G\x04\x00\x07'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002382 sel:0x03 d:11 22 33 44
+[port0] Write word a:0x00002384 sel:0x03 d:55 66 77 00
+aa aa aa aa 11 22 33 44 55 66 77 00 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00G\x04\x00\x07')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00W\x05\x00\x07\x11"3DUfw'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00W\x05\x00\x07'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002b82 sel:0x03 d:00 11 22 33
+[port0] Write word a:0x00002b84 sel:0x03 d:44 55 66 77
+aa aa aa aa 00 11 22 33 44 55 66 77 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00W\x05\x00\x07')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00g\x06\x00\x07\x11"3DUfw'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00g\x06\x00\x07'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003382 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003384 sel:0x03 d:33 44 55 66
+[port0] Write word a:0x00003386 sel:0x01 d:77 00 00 00
+aa aa aa aa aa aa 11 22 33 44 55 66 77 00 aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00g\x06\x00\x07')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00w\x07\x00\x07\x11"3DUfw'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00w\x07\x00\x07'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003b82 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003b84 sel:0x03 d:22 33 44 55
+[port0] Write word a:0x00003b86 sel:0x01 d:66 77 00 00
+aa aa aa aa aa aa 00 11 22 33 44 55 66 77 aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00w\x07\x00\x07')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00H\x04\x00\x08\x11"3DUfw\x88'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00H\x04\x00\x08'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002402 sel:0x03 d:11 22 33 44
+[port0] Write word a:0x00002404 sel:0x03 d:55 66 77 88
+aa aa aa aa 11 22 33 44 55 66 77 88 aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00H\x04\x00\x08')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00X\x05\x00\x08\x11"3DUfw\x88'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00X\x05\x00\x08'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00002c02 sel:0x03 d:00 11 22 33
+[port0] Write word a:0x00002c04 sel:0x03 d:44 55 66 77
+[port0] Write word a:0x00002c06 sel:0x01 d:88 00 00 00
+aa aa aa aa 00 11 22 33 44 55 66 77 88 00 aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00X\x05\x00\x08')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00h\x06\x00\x08\x11"3DUfw\x88'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00h\x06\x00\x08'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003402 sel:0x02 d:00 00 11 22
+[port0] Write word a:0x00003404 sel:0x03 d:33 44 55 66
+[port0] Write word a:0x00003406 sel:0x01 d:77 88 00 00
+aa aa aa aa aa aa 11 22 33 44 55 66 77 88 aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00h\x06\x00\x08')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00x\x07\x00\x08\x11"3DUfw\x88'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00x\x07\x00\x08'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00003c02 sel:0x02 d:00 00 00 11
+[port0] Write word a:0x00003c04 sel:0x03 d:22 33 44 55
+[port0] Write word a:0x00003c06 sel:0x03 d:66 77 88 00
+aa aa aa aa aa aa 00 11 22 33 44 55 66 77 88 00
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+bytearray(b'\xa4\x00\x00x\x07\x00\x08')
+test 4: various reads
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00A\x04\x00\x01'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002082 d:11 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00A\x04\x00\x01\x11'), keep=[1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00A\x04\x00\x01\x11')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00Q\x05\x00\x01'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002882 d:00 11 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00Q\x05\x00\x01\x11'), keep=[1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00Q\x05\x00\x01\x11')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00a\x06\x00\x01'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003082 d:aa aa 11 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00a\x06\x00\x01\x11'), keep=[1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00a\x06\x00\x01\x11')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00q\x07\x00\x01'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003882 d:aa aa 00 11
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00q\x07\x00\x01\x11'), keep=[1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00q\x07\x00\x01\x11')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00B\x04\x00\x02'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002102 d:11 22 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00B\x04\x00\x02\x11"'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00B\x04\x00\x02\x11"')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00R\x05\x00\x02'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002902 d:00 11 22 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00R\x05\x00\x02\x11"'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00R\x05\x00\x02\x11"')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00b\x06\x00\x02'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003102 d:aa aa 11 22
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00b\x06\x00\x02\x11"'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00b\x06\x00\x02\x11"')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00r\x07\x00\x02'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003902 d:aa aa 00 11
+[port0] Read word a:0x00003904 d:22 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00r\x07\x00\x02\x11"'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00r\x07\x00\x02\x11"')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00C\x04\x00\x03'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002182 d:11 22 33 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00C\x04\x00\x03\x11"3'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00C\x04\x00\x03\x11"3')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00S\x05\x00\x03'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002982 d:00 11 22 33
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00S\x05\x00\x03\x11"3'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00S\x05\x00\x03\x11"3')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00c\x06\x00\x03'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003182 d:aa aa 11 22
+[port0] Read word a:0x00003184 d:33 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00c\x06\x00\x03\x11"3'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00c\x06\x00\x03\x11"3')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00s\x07\x00\x03'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003982 d:aa aa 00 11
+[port0] Read word a:0x00003984 d:22 33 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00s\x07\x00\x03\x11"3'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00s\x07\x00\x03\x11"3')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00D\x04\x00\x04'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002202 d:11 22 33 44
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00D\x04\x00\x04\x11"3D'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00D\x04\x00\x04\x11"3D')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00T\x05\x00\x04'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002a02 d:00 11 22 33
+[port0] Read word a:0x00002a04 d:44 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00T\x05\x00\x04\x11"3D'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00T\x05\x00\x04\x11"3D')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00d\x06\x00\x04'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003202 d:aa aa 11 22
+[port0] Read word a:0x00003204 d:33 44 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00d\x06\x00\x04\x11"3D'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00d\x06\x00\x04\x11"3D')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00t\x07\x00\x04'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003a02 d:aa aa 00 11
+[port0] Read word a:0x00003a04 d:22 33 44 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00t\x07\x00\x04\x11"3D'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00t\x07\x00\x04\x11"3D')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00E\x04\x00\x05'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002282 d:11 22 33 44
+[port0] Read word a:0x00002284 d:55 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00E\x04\x00\x05\x11"3DU'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00E\x04\x00\x05\x11"3DU')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00U\x05\x00\x05'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002a82 d:00 11 22 33
+[port0] Read word a:0x00002a84 d:44 55 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00U\x05\x00\x05\x11"3DU'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00U\x05\x00\x05\x11"3DU')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00e\x06\x00\x05'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003282 d:aa aa 11 22
+[port0] Read word a:0x00003284 d:33 44 55 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00e\x06\x00\x05\x11"3DU'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00e\x06\x00\x05\x11"3DU')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00u\x07\x00\x05'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003a82 d:aa aa 00 11
+[port0] Read word a:0x00003a84 d:22 33 44 55
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00u\x07\x00\x05\x11"3DU'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00u\x07\x00\x05\x11"3DU')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00F\x04\x00\x06'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002302 d:11 22 33 44
+[port0] Read word a:0x00002304 d:55 66 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00F\x04\x00\x06\x11"3DUf'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00F\x04\x00\x06\x11"3DUf')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00V\x05\x00\x06'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002b02 d:00 11 22 33
+[port0] Read word a:0x00002b04 d:44 55 66 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00V\x05\x00\x06\x11"3DUf'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00V\x05\x00\x06\x11"3DUf')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00f\x06\x00\x06'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003302 d:aa aa 11 22
+[port0] Read word a:0x00003304 d:33 44 55 66
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00f\x06\x00\x06\x11"3DUf'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00f\x06\x00\x06\x11"3DUf')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00v\x07\x00\x06'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003b02 d:aa aa 00 11
+[port0] Read word a:0x00003b04 d:22 33 44 55
+[port0] Read word a:0x00003b06 d:66 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00v\x07\x00\x06\x11"3DUf'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00v\x07\x00\x06\x11"3DUf')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00G\x04\x00\x07'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002382 d:11 22 33 44
+[port0] Read word a:0x00002384 d:55 66 77 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00G\x04\x00\x07\x11"3DUfw'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00G\x04\x00\x07\x11"3DUfw')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00W\x05\x00\x07'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002b82 d:00 11 22 33
+[port0] Read word a:0x00002b84 d:44 55 66 77
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00W\x05\x00\x07\x11"3DUfw'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00W\x05\x00\x07\x11"3DUfw')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00g\x06\x00\x07'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003382 d:aa aa 11 22
+[port0] Read word a:0x00003384 d:33 44 55 66
+[port0] Read word a:0x00003386 d:77 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00g\x06\x00\x07\x11"3DUfw'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00g\x06\x00\x07\x11"3DUfw')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00w\x07\x00\x07'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003b82 d:aa aa 00 11
+[port0] Read word a:0x00003b84 d:22 33 44 55
+[port0] Read word a:0x00003b86 d:66 77 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00w\x07\x00\x07\x11"3DUfw'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00w\x07\x00\x07\x11"3DUfw')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00H\x04\x00\x08'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002402 d:11 22 33 44
+[port0] Read word a:0x00002404 d:55 66 77 88
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00H\x04\x00\x08\x11"3DUfw\x88'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00H\x04\x00\x08\x11"3DUfw\x88')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00X\x05\x00\x08'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00002c02 d:00 11 22 33
+[port0] Read word a:0x00002c04 d:44 55 66 77
+[port0] Read word a:0x00002c06 d:88 00 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00X\x05\x00\x08\x11"3DUfw\x88'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00X\x05\x00\x08\x11"3DUfw\x88')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00h\x06\x00\x08'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003402 d:aa aa 11 22
+[port0] Read word a:0x00003404 d:33 44 55 66
+[port0] Read word a:0x00003406 d:77 88 aa aa
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00h\x06\x00\x08\x11"3DUfw\x88'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00h\x06\x00\x08\x11"3DUfw\x88')
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00x\x07\x00\x08'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00003c02 d:aa aa 00 11
+[port0] Read word a:0x00003c04 d:22 33 44 55
+[port0] Read word a:0x00003c06 d:66 77 88 00
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00x\x07\x00\x08\x11"3DUfw\x88'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+bytearray(b'\xa3\x00\x00x\x07\x00\x08\x11"3DUfw\x88')
+test 5: test leading padding
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\x04\x00\x02\xaa\xbb'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\x04\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\xa2\x00\x00\x00\x06\x00\x02\xcc\xdd'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Write word a:0x00000002 sel:0x01 d:aa bb 00 00
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00\xa1\x00\x00\x00\x04\x00\x02'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\x08\x00\x02\xee\xff'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\x08\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00000004 sel:0x01 d:ee ff 00 00
+11 22 33 44 aa bb 00 00 ee ff 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+bytearray(b'\xa4\x00\x00\x00\x04\x00\x02\xa4\x00\x00\x00\x08\x00\x02')
+test 6: test trailing padding
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\n\x00\x02\xaa\xbb'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\n\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\x0c\x00\x02\xcc\xdd\x00\x00\x00\x00\x00\x00\x00\x00'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Write word a:0x00000004 sel:0x02 d:00 00 aa bb
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\x0c\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00000006 sel:0x01 d:cc dd 00 00
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00\x00\n\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00000004 d:ee ff aa bb
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00\x00\n\x00\x02\xaa\xbb'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa1\x00\x00\x00\n\x00\x02\x00'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[source] Sending frame AXIStreamFrame(data=bytearray(b'\xa2\x00\x00\x00\x0e\x00\x02\xee\xff'), keep=None, id=None, dest=None, user=None, last_cycle_user=None)
+[port0] Read word a:0x00000004 d:ee ff aa bb
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa3\x00\x00\x00\n\x00\x02\xaa\xbb'), keep=[1, 1, 1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)LXT2 info: dumpfile test_axis_wb_master_8_32_16.lxt opened for output.
+
+[sink] Got frame AXIStreamFrame(data=bytearray(b'\xa4\x00\x00\x00\x0e\x00\x02'), keep=[1, 1, 1, 1, 1, 1, 1], id=[0, 0, 0, 0, 0, 0, 0], dest=[0, 0, 0, 0, 0, 0, 0], user=[0, 0, 0, 0, 0, 0, 0], last_cycle_user=0)
+[port0] Write word a:0x00000006 sel:0x02 d:00 00 ee ff
+11 22 33 44 aa bb 00 00 ee ff aa bb cc dd ee ff
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+bytearray(b'\xa4\x00\x00\x00\n\x00\x02\xa4\x00\x00\x00\x0c\x00\x02\xa3\x00\x00\x00\n\x00\x02\xaa\xbb\xa3\x00\x00\x00\n\x00\x02\xaa\xbb\xa4\x00\x00\x00\x0e\x00\x02')

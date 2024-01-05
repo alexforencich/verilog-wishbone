@@ -211,7 +211,7 @@ def bench():
 
         data = wb_ram_inst.read_mem(0x00000000, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(0,4) == b'\x11\x22\x33\x44'
 
@@ -237,7 +237,7 @@ def bench():
 
         data = wb_ram_inst.read_mem(0x00001000, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(0,4) == b'\x11\x22\x33\x44'
 
@@ -257,21 +257,21 @@ def bench():
         print("test 3: arbitration")
         current_test.next = 3
 
-        wbm0_inst.init_write(0x00000010, bytearray(range(16)))
-        wbm0_inst.init_write(0x00000020, bytearray(range(16)))
-        wbm1_inst.init_write(0x00001010, bytearray(range(16)))
-        wbm1_inst.init_write(0x00001020, bytearray(range(16)))
+        wbm0_inst.init_write(0x00000010, bytearray(list(range(16))))
+        wbm0_inst.init_write(0x00000020, bytearray(list(range(16))))
+        wbm1_inst.init_write(0x00001010, bytearray(list(range(16))))
+        wbm1_inst.init_write(0x00001020, bytearray(list(range(16))))
 
         yield wbm1_inst.wait()
         yield clk.posedge
 
         data = wb_ram_inst.read_mem(0x00000010, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         data = wb_ram_inst.read_mem(0x00001010, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(0,4) == b'\x11\x22\x33\x44'
 
@@ -286,19 +286,19 @@ def bench():
 
         data = wbm0_inst.get_read_data()
         assert data[0] == 0x00000010
-        assert data[1] == bytearray(range(16))
+        assert data[1] == bytearray(list(range(16)))
 
         data = wbm0_inst.get_read_data()
         assert data[0] == 0x00000020
-        assert data[1] == bytearray(range(16))
+        assert data[1] == bytearray(list(range(16)))
 
         data = wbm1_inst.get_read_data()
         assert data[0] == 0x00001010
-        assert data[1] == bytearray(range(16))
+        assert data[1] == bytearray(list(range(16)))
 
         data = wbm1_inst.get_read_data()
         assert data[0] == 0x00001020
-        assert data[1] == bytearray(range(16))
+        assert data[1] == bytearray(list(range(16)))
 
         yield delay(100)
 

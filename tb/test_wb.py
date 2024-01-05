@@ -101,7 +101,7 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         yield delay(100)
 
@@ -113,7 +113,7 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(0,4) == b'test'
 
@@ -128,7 +128,7 @@ def bench():
 
         data = wb_ram_inst.read_mem(0, 32)
         for i in range(0, len(data), 16):
-            print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+            print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
         assert wb_ram_inst.read_mem(4,4) == b'\x11\x22\x33\x44'
 
@@ -163,7 +163,7 @@ def bench():
 
                 data = wb_ram_inst.read_mem(256*(16*offset+length), 32)
                 for i in range(0, len(data), 16):
-                    print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+                    print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset, length) == b'\x11\x22\x33\x44\x55\x66\x77\x88'[0:length]
                 assert wb_ram_inst.read_mem(256*(16*offset+length)+offset-1, 1) == b'\xAA'
@@ -202,7 +202,7 @@ def bench():
 
             data = wb_ram_inst.read_mem(0x4000+offset*64, 64)
             for i in range(0, len(data), 16):
-                print(" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16]))))
+                print((" ".join(("{:02x}".format(c) for c in bytearray(data[i:i+16])))))
 
             assert wb_ram_inst.read_mem((0x4000+offset*64+0)+offset*2, 2) == b'\x34\x12'
             assert wb_ram_inst.read_mem((0x4000+offset*64+16)+offset*4, 4) == b'\x78\x56\x34\x12'
